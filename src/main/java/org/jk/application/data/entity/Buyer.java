@@ -34,4 +34,12 @@ public class Buyer {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    @Override
+    public String toString() {
+        return "Buyer:" + '\n' +
+                "name:" + name + '\n' +
+                "email:" + email + '\n' +
+                "phone:" + phone + '\n';
+    }
 }

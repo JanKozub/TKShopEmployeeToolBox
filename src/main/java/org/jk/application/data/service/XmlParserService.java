@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,21 +17,12 @@ public class XmlParserService {
 
     private Document doc;
 
-    public XmlParserService(String filePath) {
-        try {
-
-            File inputFile = new File(filePath);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(inputFile);
-            doc.getDocumentElement().normalize();
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-            System.out.println("----------------------------");
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public XmlParserService(String filePath) throws Exception {
+        File inputFile = new File(filePath);
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        doc = dBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
     }
 
     public List<Order> getOrders() {

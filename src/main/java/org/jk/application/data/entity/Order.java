@@ -3,7 +3,7 @@ package org.jk.application.data.entity;
 import java.util.List;
 
 public class Order {
-    private String Id;
+    private String id;
     private String date;
     private Buyer buyer;
     private List<Item> items;
@@ -11,20 +11,24 @@ public class Order {
     private Delivery delivery;
 
     public Order(String id, String date, Buyer buyer, List<Item> items, Payment payment, Delivery delivery) {
-        Id = id;
-        this.date = date;
+        this.id = id;
+        this.date = date.substring(0, date.indexOf('T'));
         this.buyer = buyer;
         this.items = items;
         this.payment = payment;
         this.delivery = delivery;
     }
 
+    public Order() {
+
+    }
+
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getDate() {
@@ -70,13 +74,10 @@ public class Order {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder("Order:" + '\n' +
-                "Id=" + Id + '\n' +
+                "Id=" + id + '\n' +
                 "Date=" + date + '\n' +
                 "----------------------" + '\n' +
-                "Buyer:" + '\n' +
-                "name:" + buyer.getName() + '\n' +
-                "email:" + buyer.getEmail() + '\n' +
-                "phone:" + buyer.getPhone() + '\n' +
+                buyer.toString() +
                 "----------------------" + '\n' +
                 "Items:" + '\n');
 
@@ -103,4 +104,5 @@ public class Order {
                 .append("-------------------");
         return output.toString();
     }
+
 }
