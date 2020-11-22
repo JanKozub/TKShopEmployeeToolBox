@@ -6,7 +6,7 @@ public class Payment {
     private String amount;
 
     public Payment(String date, String provider, String amount) {
-        this.date = date;
+        this.date = date.substring(0, date.indexOf('T'));;
         this.provider = provider;
         this.amount = amount;
     }

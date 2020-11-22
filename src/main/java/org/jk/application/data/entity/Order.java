@@ -3,6 +3,7 @@ package org.jk.application.data.entity;
 import java.util.List;
 
 public class Order {
+    private int number;
     private String id;
     private String date;
     private Buyer buyer;
@@ -10,7 +11,8 @@ public class Order {
     private Payment payment;
     private Delivery delivery;
 
-    public Order(String id, String date, Buyer buyer, List<Item> items, Payment payment, Delivery delivery) {
+    public Order(int number, String id, String date, Buyer buyer, List<Item> items, Payment payment, Delivery delivery) {
+        this.number = number;
         this.id = id;
         this.date = date.substring(0, date.indexOf('T'));
         this.buyer = buyer;
@@ -19,8 +21,12 @@ public class Order {
         this.delivery = delivery;
     }
 
-    public Order() {
+    public int getNumber() {
+        return number;
+    }
 
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getId() {

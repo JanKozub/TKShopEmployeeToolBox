@@ -15,7 +15,7 @@ import java.util.List;
 
 public class XmlParserService {
 
-    private Document doc;
+    private final Document doc;
 
     public XmlParserService(String filePath) throws Exception {
         File inputFile = new File(filePath);
@@ -50,6 +50,7 @@ public class XmlParserService {
                 }
 
                 Order order = new Order(
+                        temp+1,
                         orderElement.getElementsByTagName("id").item(0).getTextContent(),
                         orderElement.getElementsByTagName("orderDate").item(0).getTextContent(),
                         new Buyer(
@@ -72,7 +73,6 @@ public class XmlParserService {
                                 deliveryElement.getElementsByTagName("amount").item(0).getTextContent()
                         )
                 );
-
                 orders.add(order);
             }
         }
