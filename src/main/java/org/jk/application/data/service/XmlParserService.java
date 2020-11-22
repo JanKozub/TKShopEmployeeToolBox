@@ -18,6 +18,7 @@ public class XmlParserService {
 
     public XmlParserService(String filePath) {
         try {
+
             File inputFile = new File(filePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

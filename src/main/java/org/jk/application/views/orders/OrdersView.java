@@ -1,11 +1,5 @@
 package org.jk.application.views.orders;
 
-import java.util.Optional;
-
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import org.jk.application.data.entity.Person;
-import org.jk.application.data.service.PersonService;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
@@ -16,18 +10,29 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.jk.application.data.entity.Person;
+import org.jk.application.data.service.PersonService;
+import org.jk.application.views.main.MainView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.artur.helpers.CrudServiceDataProvider;
-import org.jk.application.views.main.MainView;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Scanner;
 
 @Route(value = "orders", layout = MainView.class)
 @PageTitle("Orders")
@@ -35,6 +40,7 @@ import org.jk.application.views.main.MainView;
 public class OrdersView extends Div {
 
     private Grid<Person> grid;
+    private Upload upload;
 
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
@@ -78,12 +84,8 @@ public class OrdersView extends Div {
             }
         });
 
-        // Configure Form
         binder = new Binder<>(Person.class);
-
-        // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
-
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
@@ -102,6 +104,22 @@ public class OrdersView extends Div {
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the person details.");
             }
+        });
+
+        MemoryBuffer buffer = new MemoryBuffer();
+        upload = new Upload(buffer);
+        upload.setHeight("5%");
+        upload.addSucceededListener(e ->
+        {
+            try {
+                File file = new File("src/main/resources/files/temp.xml");
+                FileUtils.copyInputStreamToFile(buffer.getInputStream(), file);
+                
+            }catch (IOException ex) {
+
+            }
+
+            add(new Label());
         });
 
         SplitLayout splitLayout = new SplitLayout();
@@ -145,10 +163,6 @@ public class OrdersView extends Div {
     }
 
     private void createGridLayout(SplitLayout splitLayout) {
-        MemoryBuffer buffer = new MemoryBuffer();
-        Upload upload = new Upload(buffer);
-        upload.setHeight("5%");
-
         Div wrapper = new Div();
         wrapper.setId("grid-wrapper");
         wrapper.setWidthFull();
