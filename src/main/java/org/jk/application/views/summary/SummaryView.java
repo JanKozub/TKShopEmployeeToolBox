@@ -63,9 +63,8 @@ public class SummaryView extends VerticalLayout {
         dataProvider.setSortOrder(Entry::getNum, SortDirection.DESCENDING);
 
         Grid<Entry> itemGrid = new Grid<>();
-        itemGrid.setHeightFull();
         itemGrid.setWidthFull();
-        itemGrid.setHeightByRows(true);
+        itemGrid.setHeightFull();
 
         itemGrid.addColumn(new TextRenderer<>(Entry::getName)).setHeader("Name");
         itemGrid.addColumn(new TextRenderer<>(entry -> Integer.toString(entry.getNum()))).setHeader("Psc");
