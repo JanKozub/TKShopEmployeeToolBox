@@ -43,7 +43,7 @@ public class XmlParserService {
                     Item item = new Item(
                             lineElement.getElementsByTagName("offerId").item(i).getTextContent(),
                             lineElement.getElementsByTagName("offerName").item(i).getTextContent(),
-                            lineElement.getElementsByTagName("quantity").item(i).getTextContent(),
+                            Integer.parseInt(lineElement.getElementsByTagName("quantity").item(i).getTextContent()),
                             Double.parseDouble(lineElement.getElementsByTagName("amount").item(i).getTextContent())
                     );
                     items.add(item);

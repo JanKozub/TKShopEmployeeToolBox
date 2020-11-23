@@ -88,7 +88,7 @@ public class Order {
                 "Items:" + '\n');
 
         for (Item item : items) {
-            output.append("Id:").append(item.getId()).append('\n')
+            output.append("Id:").append(item.getOfferId()).append('\n')
                     .append("Name:").append(item.getName()).append('\n')
                     .append("Quantity:").append(item.getQuantity()).append('\n')
                     .append("Price:").append(item.getPrice()).append('\n')
@@ -110,5 +110,4 @@ public class Order {
                 .append("-------------------");
         return output.toString();
     }
-
 }
