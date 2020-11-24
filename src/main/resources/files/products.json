@@ -1,0 +1,74 @@
+{
+  "products": [
+    {
+      "num": 1,
+      "name": "Adapter USB do Logitech Shifter G29 G920 T300 TX",
+      "price": 110,
+      "printPrice": 5,
+      "printTime": 1.5
+    },
+    {
+      "num": 2,
+      "name": "T3PA spring mod 1 szt Thrustmaster simracing amortyzator",
+      "price": 100,
+      "printPrice": 8,
+      "printTime": 0
+    },
+    {
+      "num": 3,
+      "name": "T3PA spring mod Thrustmaster simracing amortyzator",
+      "price": 150,
+      "printPrice": 16,
+      "printTime": 0
+    },
+    {
+      "num": 4,
+      "name": "T3PA spring mod 3pak Thrustmaster simracing amortyzator",
+      "price": 220,
+      "printPrice": 24,
+      "printTime": 0
+    },
+    {
+      "num": 5,
+      "name": "ShortShifter nakładka do TH8A Thrustmaster",
+      "price": 60,
+      "printPrice": 9,
+      "printTime": 0
+    },
+    {
+      "num": 6,
+      "name": "Adapter do thrustmaster kierownica t300 tx ts-pc",
+      "price": 60,
+      "printPrice": 9,
+      "printTime": 0
+    },
+    {
+      "num": 7,
+      "name": "Uchwyt na shifter do Playseat Challenge",
+      "price": 150,
+      "printPrice": 37,
+      "printTime": 22.5
+    },
+    {
+      "num": 8,
+      "name": "Usztywniacz nakładka do TH8A Thrustmaster",
+      "price": 75,
+      "printPrice": 5,
+      "printTime": 22.5
+    },
+    {
+      "num": 9,
+      "name": "Uchwyt na telefon do Thrustmaster T300",
+      "price": 100,
+      "printPrice": 9,
+      "printTime": 22.5
+    },
+    {
+      "num": 10,
+      "name": "Kierownica do Thrustmaster t300 tx ts-pc 35cm",
+      "price": 230,
+      "printPrice": 9,
+      "printTime": 22.5
+    }
+  ]
+}

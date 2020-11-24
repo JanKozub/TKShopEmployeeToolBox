@@ -14,8 +14,8 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.commons.io.FileUtils;
-import org.jk.application.data.entity.Item;
-import org.jk.application.data.entity.Order;
+import org.jk.application.data.model.order.Item;
+import org.jk.application.data.model.order.Order;
 import org.jk.application.data.service.XmlParserService;
 import org.jk.application.views.main.MainView;
 

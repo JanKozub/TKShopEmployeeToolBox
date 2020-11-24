@@ -1,4 +1,4 @@
-package org.jk.application.data.entity;
+package org.jk.application.data.model.order;
 
 import java.util.Objects;
 

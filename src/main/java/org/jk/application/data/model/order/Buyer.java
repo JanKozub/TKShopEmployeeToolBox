@@ -1,4 +1,4 @@
-package org.jk.application.data.entity;
+package org.jk.application.data.model.order;
 
 public class Buyer {
     private String name;

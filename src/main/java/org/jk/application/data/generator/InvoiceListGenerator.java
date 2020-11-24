@@ -2,8 +2,8 @@ package org.jk.application.data.generator;
 
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.jk.application.data.entity.Item;
-import org.jk.application.data.entity.Order;
+import org.jk.application.data.model.order.Item;
+import org.jk.application.data.model.order.Order;
 
 import java.util.List;
 

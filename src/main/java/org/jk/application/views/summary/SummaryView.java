@@ -6,19 +6,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.flow.data.provider.SortOrder;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.jk.application.data.entity.Item;
-import org.jk.application.data.entity.Order;
+import org.jk.application.data.model.order.Item;
+import org.jk.application.data.model.order.Order;
 import org.jk.application.data.service.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Route(value = "summary-view", layout = MainView.class)
 @PageTitle("Summary")
