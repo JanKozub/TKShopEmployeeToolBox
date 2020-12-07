@@ -34,8 +34,6 @@ public class PriceListView extends VerticalLayout {
             String name = "";
             double price = 0;
             double printPrice = 0;
-            double printTime;
-
             while (!parser.isClosed()) {
                 JsonToken jsonToken = parser.nextToken();
                 if (JsonToken.FIELD_NAME.equals(jsonToken)) {
@@ -54,9 +52,7 @@ public class PriceListView extends VerticalLayout {
                         printPrice = parser.getValueAsDouble();
 
                     if (parser.getCurrentName().equals("printTime")) {
-                        printTime = parser.getValueAsDouble();
-                        Product product = new Product(num, name, price, printPrice ,printTime);
-                        products.add(product);
+                        products.add(new Product(num, name, price, printPrice ,parser.getValueAsDouble()));
                     }
                 }
             }

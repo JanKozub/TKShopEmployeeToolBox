@@ -29,7 +29,6 @@ public class OrdersView extends Div {
 
     private Grid<Order> grid;
     private Upload upload;
-    private List<Order> orders;
     private final String filePath = "src/main/resources/files/temp.xml";
 
     public OrdersView() {
@@ -127,7 +126,7 @@ public class OrdersView extends Div {
     private void refreshGrid() {
         try {
             XmlParserService xmlParserService = new XmlParserService(filePath);
-            orders = xmlParserService.getOrders();
+            List<Order> orders = xmlParserService.getOrders();
             grid.setItems(orders);
             upload.setDropLabel(new Span("File has been loaded"));
         } catch (Exception exception) {
