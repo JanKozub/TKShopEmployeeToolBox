@@ -20,7 +20,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import org.jk.application.views.myexpenses.MyExpensesView;
 import org.jk.application.views.orders.OrdersView;
-import org.jk.application.views.invoicegenerator.InvoiceGeneratorView;
 import org.jk.application.views.pricelist.PriceListView;
 import org.jk.application.views.summary.SummaryView;
 
@@ -83,7 +82,6 @@ public class MainView extends AppLayout {
         return new Tab[] {
             createTab("Orders", OrdersView.class),
             createTab("Summary", SummaryView.class),
-            createTab("Invoice Generator", InvoiceGeneratorView.class),
             createTab("Price List", PriceListView.class),
             createTab("My Expenses", MyExpensesView.class)
         };

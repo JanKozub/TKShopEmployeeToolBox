@@ -52,6 +52,12 @@ public class MyExpensesView extends HorizontalLayout {
         });
 
         addExpenseDialog.add(new VerticalLayout(nameField, datePicker, numberField, submitButton));
+        addExpenseDialog.addDialogCloseActionListener(e -> {
+            addExpenseDialog.close();
+            datePicker.clear();
+            nameField.clear();
+            numberField.clear();
+        });
 
         VerticalLayout leftLayout = new VerticalLayout();
         leftLayout.setHeightFull();
