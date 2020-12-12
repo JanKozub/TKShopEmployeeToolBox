@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -77,11 +78,11 @@ public class MyExpensesView extends HorizontalLayout {
 
         expenseGrid.addColumn(new TextRenderer<>(e -> String.valueOf(e.getId()))).setHeader("ID");
         expenseGrid.addColumn(new TextRenderer<>(e -> e.getDate().format(DateTimeFormatter.ofPattern("d MMM uuu")))).setHeader("Date");
-        expenseGrid.addColumn(new TextRenderer<>(Expense::getName)).setHeader("Date");
-        expenseGrid.addColumn(new TextRenderer<>(e -> String.valueOf(e.getPrice()))).setHeader("Price");
+        expenseGrid.addColumn(new TextRenderer<>(Expense::getName)).setHeader("Name");
+        expenseGrid.addColumn(new TextRenderer<>(e -> e.getPrice() + " PLN")).setHeader("Price");
         expenseGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         expenseGrid.setSelectionMode(Grid.SelectionMode.MULTI);
-        expenseGrid.setSizeFull();
+        expenseGrid.setHeightByRows(true);
         refreshGrid();
 
         ArrayList<Integer> selected = new ArrayList<>();
@@ -95,13 +96,9 @@ public class MyExpensesView extends HorizontalLayout {
             refreshGrid();
         });
 
-        leftLayout.add(buttons, expenseGrid);
+        leftLayout.add(buttons, expenseGrid, new Label("sum: " + getSum() + " PLN"));
 
         VerticalLayout rightLayout = new VerticalLayout();
-
-        Button showMyButton = new Button("Show My");
-        showMyButton.setWidthFull();
-        showMyButton.addThemeVariants(ButtonVariant.MATERIAL_CONTAINED);
 
         Button exportButton = new Button("Export");
         exportButton.setWidthFull();
@@ -111,12 +108,20 @@ public class MyExpensesView extends HorizontalLayout {
         importButton.setWidthFull();
         importButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
-        rightLayout.add(showMyButton, exportButton, importButton);
+        rightLayout.add(exportButton, importButton);
         rightLayout.setHeightFull();
         rightLayout.setWidth("20%");
 
         setSizeFull();
         add(leftLayout, rightLayout);
+    }
+
+    private String getSum() {
+        double sum = 0;
+
+        sum += ExpensesService.getExpenses().stream().mapToDouble(Expense::getPrice).sum();
+
+        return String.valueOf(sum);
     }
 
     private void refreshGrid() {
