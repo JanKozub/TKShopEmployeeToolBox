@@ -9,6 +9,7 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.jk.application.data.model.product.Product;
+import org.jk.application.data.service.PriceListService;
 import org.jk.application.views.main.MainView;
 
 import java.io.File;
@@ -24,41 +25,7 @@ public class PriceListView extends VerticalLayout {
     public PriceListView() {
         setId("price-list-view");
 
-        List<Product> products = new ArrayList<>();
-
-        try {
-            JsonFactory factory = new JsonFactory();
-            JsonParser parser = factory.createParser(new File("src/main/resources/files/products.json"));
-
-            int num = 0;
-            String name = "";
-            double price = 0;
-            double printPrice = 0;
-            while (!parser.isClosed()) {
-                JsonToken jsonToken = parser.nextToken();
-                if (JsonToken.FIELD_NAME.equals(jsonToken)) {
-                    parser.nextToken();
-
-                    if (parser.getCurrentName().equals("num"))
-                        num = parser.getValueAsInt();
-
-                    if (parser.getCurrentName().equals("name"))
-                        name = parser.getValueAsString();
-
-                    if (parser.getCurrentName().equals("price"))
-                        price = parser.getValueAsDouble();
-
-                    if (parser.getCurrentName().equals("printPrice"))
-                        printPrice = parser.getValueAsDouble();
-
-                    if (parser.getCurrentName().equals("printTime")) {
-                        products.add(new Product(num, name, price, printPrice ,parser.getValueAsDouble()));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
-        }
+        List<Product> products = PriceListService.getProducts();
 
         Grid<Product> productGrid = new Grid<>();
 
@@ -75,6 +42,5 @@ public class PriceListView extends VerticalLayout {
         setSizeFull();
         add(productGrid);
     }
-
 }
 

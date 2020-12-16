@@ -9,14 +9,18 @@ import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.jk.application.data.model.Entry;
 import org.jk.application.data.model.order.Item;
 import org.jk.application.data.model.order.Order;
+import org.jk.application.data.model.product.Product;
+import org.jk.application.data.service.PriceListService;
 import org.jk.application.data.service.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Route(value = "summary-view", layout = MainView.class)
 @PageTitle("Summary")
@@ -33,6 +37,7 @@ public class SummaryView extends VerticalLayout {
         }
 
         List<Entry> entries = new ArrayList<>();
+        List<Product> products = PriceListService.getProducts();
 
         for (Order order : orders) {
             List<Item> items = order.getItems();
@@ -64,50 +69,25 @@ public class SummaryView extends VerticalLayout {
         itemGrid.setWidthFull();
         itemGrid.setHeightFull();
 
-        itemGrid.addColumn(new TextRenderer<>(Entry::getName)).setHeader("Name");
+        itemGrid.addColumn(new TextRenderer<>(Entry::getName))
+                .setHeader("Name").setFooter("Ilość przedmiotów razem: " + sum);
         itemGrid.addColumn(new TextRenderer<>(entry -> Integer.toString(entry.getNum()))).setHeader("Psc");
-        itemGrid.addColumn(new TextRenderer<>(entry -> entry.getPrice() + " PLN")).setHeader("Price/psc");
+        itemGrid.addColumn(new TextRenderer<>(entry -> entry.getPrice() + " PLN")).setHeader("Price/psc")
+                .setFooter(PriceListService.sumPrice(products, entries) + " PLN");
+        itemGrid.addColumn(new TextRenderer<>(entry -> {
+            AtomicReference<String> val = new AtomicReference<>("unknown");
+            products.forEach(product -> {
+                if (product.getName().equals(entry.getName())) {
+                    val.set(String.valueOf(entry.getNum() * product.getPrintPrice()));
+                }
+            });
+            return String.valueOf(val);
+        })).setHeader("Print price").setFooter(PriceListService.sumPrintPrice(products, entries) + " PLN");
+
+        itemGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         itemGrid.setItems(dataProvider);
 
         setSizeFull();
-        add(itemGrid, new Label("sum= " + sum));
+        add(itemGrid);
     }
-
-    public static class Entry {
-
-        private String name;
-        private int num;
-        private double price;
-
-        public Entry(String name, int num, double price) {
-            this.name = name;
-            this.num = num;
-            this.price = price;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getNum() {
-            return num;
-        }
-
-        public void setNum(int num) {
-            this.num = num;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-    }
-
 }

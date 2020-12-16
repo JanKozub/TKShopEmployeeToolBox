@@ -9,21 +9,21 @@
     },
     {
       "num": 2,
-      "name": "T3PA spring mod 1 szt Thrustmaster simracing amortyzator",
+      "name": "T3PA spring mod 1 szt Thrustmaster amortyzator",
       "price": 100,
       "printPrice": 8,
       "printTime": 0
     },
     {
       "num": 3,
-      "name": "T3PA spring mod Thrustmaster simracing amortyzator",
+      "name": "T3PA spring mod Thrustmaster amortyzator",
       "price": 150,
       "printPrice": 16,
       "printTime": 0
     },
     {
       "num": 4,
-      "name": "T3PA spring mod 3pak Thrustmaster simracing amortyzator",
+      "name": "T3PA spring mod 3pak simracing amortyzator",
       "price": 220,
       "printPrice": 24,
       "printTime": 0
@@ -69,6 +69,89 @@
       "price": 230,
       "printPrice": 9,
       "printTime": 22.5
+    },
+    {
+      "num": 11,
+      "name": "LoadCell MOD do T3PA - TK Customs Thrustmaster",
+      "price": 180,
+      "printPrice": 5,
+      "printTime": 2.5
+    },
+    {
+      "num": 12,
+      "name": "Shifter Logitech G29 z adapterem na USB",
+      "price": 349,
+      "printPrice": 5,
+      "printTime": 1.5
+    },{
+      "num": 13,
+      "name": "T3PA spring mod 3pak Thrustmaster simracing amortyzator",
+      "price": 220,
+      "printPrice": 24,
+      "printTime": 12
+    },
+    {
+      "num": 14,
+      "name": "T3PA spring mod 1 szt Thrustmaster simracing amortyzator",
+      "price": 100,
+      "printPrice": 8,
+      "printTime": 8
+    },
+    {
+      "num": 15,
+      "name": "T3PA spring mod Thrustmaster simracing amortyzator",
+      "price": 150,
+      "printPrice": 16,
+      "printTime": 10
+    },
+    {
+      "num": 16,
+      "name": "Spring mod hamulec",
+      "price": 50,
+      "printPrice": 8,
+      "printTime": 8
+    },
+    {
+      "num": 17,
+      "name": "Shifter Logitech na USB do każdej kierownicy na PC",
+      "price": 359,
+      "printPrice": 5,
+      "printTime": 1.5
+    },
+    {
+      "num": 18,
+      "name": "Gałka epman th8a",
+      "price": 30,
+      "printPrice": 0,
+      "printTime": 0
+    },
+    {
+      "num": 19,
+      "name": "Uchwyt na Shifter Logitech do playseat challenge",
+      "price": 150,
+      "printPrice": 37,
+      "printTime": 22.5
+    },
+    {
+      "num": 20,
+      "name": "Usztywniacz do TH8A Thrustmaster - TK Customs",
+      "price": 80,
+      "printPrice": 6,
+      "printTime": 3
+    },
+    {
+      "num": 21,
+      "name": "Nakładki do LoadCell MOD T3PA - TK Customs",
+      "price": 25,
+      "printPrice": 10,
+      "printTime": 3
+    },
+    {
+      "num": 22,
+      "name": "Buttonbox USB 12 przycisków",
+      "price": 299,
+      "printPrice": 20,
+      "printTime": 15
     }
   ]
 }
