@@ -17,9 +17,11 @@ import org.jk.application.data.model.Expense;
 import org.jk.application.data.service.ExpensesService;
 import org.jk.application.views.main.MainView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 @Route(value = "my-expenses-view", layout = MainView.class)
 @PageTitle("My Expenses")
@@ -33,6 +35,8 @@ public class MyExpensesView extends HorizontalLayout {
         Dialog addExpenseDialog = new Dialog();
         DatePicker datePicker = new DatePicker("Date");
         datePicker.setRequired(true);
+        datePicker.setValue(LocalDate.now());
+        datePicker.getElement().setAttribute("theme", "align-center");
         TextField nameField = new TextField("Name");
         nameField.setRequired(true);
         NumberField numberField = new NumberField("Price");
@@ -42,7 +46,6 @@ public class MyExpensesView extends HorizontalLayout {
         submitButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         submitButton.setWidthFull();
         submitButton.addClickListener(click -> {
-            System.out.println(new Expense(1, datePicker.getValue(), nameField.getValue(), numberField.getValue()));
             ExpensesService.addExpense(new Expense(1, datePicker.getValue(), nameField.getValue(), numberField.getValue()));
             addExpenseDialog.close();
             datePicker.clear();
