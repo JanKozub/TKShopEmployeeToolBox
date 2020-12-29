@@ -31,7 +31,7 @@ public class ExpensesService {
                 char c = (char) i;
 
                 if (c == '\n') {
-                    expenses.add(getExpense(line.substring(0, line.length() - 1).split(";")));
+                    expenses.add(getExpense(line.substring(0, line.length()).split(";")));
                     line = new StringBuilder();
                 } else {
                     line.append(c);
