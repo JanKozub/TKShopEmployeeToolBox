@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
@@ -20,6 +21,7 @@ import org.jk.application.data.service.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "orders", layout = MainView.class)
@@ -60,7 +62,7 @@ public class OrdersView extends Div {
                 FileUtils.copyInputStreamToFile(buffer.getInputStream(), file);
                 refreshGrid();
             } catch (IOException ex) {
-                upload.setDropLabel(new Span("Error occurred while loading file"));
+                System.out.println(ex.getMessage());
             }
             upload.setDropAllowed(true);
         });
@@ -130,7 +132,9 @@ public class OrdersView extends Div {
             grid.setItems(orders);
             upload.setDropLabel(new Span("File has been loaded"));
         } catch (Exception exception) {
-            upload.setDropLabel(new Span("Please upload .xml file!"));
+            Notification notification = new Notification("Error occured while uploading", 3000, Notification.Position.TOP_END);
+            notification.setOpened(true);
+            System.out.println(exception.toString());
         }
     }
 }

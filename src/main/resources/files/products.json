@@ -152,6 +152,118 @@
       "price": 299,
       "printPrice": 20,
       "printTime": 15
+    },
+    {
+      "num": 23,
+      "name": "Magnetyczne łopatki do Thrustmaster T300 - TK",
+      "price": 50,
+      "printPrice": 5,
+      "printTime": 3
+    },
+    {
+      "num": 24,
+      "name": "Usztywniacz do shortshiftera TH8A Thrustmaster",
+      "price": 75,
+      "printPrice": 5,
+      "printTime": 2
+    },
+    {
+      "num": 25,
+      "name": "Brake MOD guma do Thrustmaster T3PA wkładka real",
+      "price": 45,
+      "printPrice": 3,
+      "printTime": 0.5
+    },
+    {
+      "num": 26,
+      "name": "Shortshifter mod do TH8A Thrustmaster - TK Customs",
+      "price": 60,
+      "printPrice": 7,
+      "printTime": 5
+    },
+    {
+      "num": 27,
+      "name": "Hydrołapa Hamulec Ręczny simracing do Thrustmaster",
+      "price": 239,
+      "printPrice": 8,
+      "printTime": 5
+    },
+    {
+      "num": 28,
+      "name": "Adapter do kierownic Logitech G29 / G920 TK",
+      "price": 30,
+      "printPrice": 5,
+      "printTime": 3
+    },
+    {
+      "num": 29,
+      "name": "Adapter USB do Pedałów Logitech G29",
+      "price": 80,
+      "printPrice": 3,
+      "printTime": 1.5
+    },
+    {
+      "num": 30,
+      "name": "Kierownica do Logitech G29 / G920",
+      "price": 250,
+      "printPrice": 8,
+      "printTime": 3
+    },
+    {
+      "num": 31,
+      "name": "Podkładki do montażu pionowego Thrustmaster T300",
+      "price": 70,
+      "printPrice": 8,
+      "printTime": 8
+    },
+    {
+      "num": 32,
+      "name": "Uchwyt mocowanie do Logitech G29 G920 G27 G25 DFGT",
+      "price": 30,
+      "printPrice": 7,
+      "printTime": 4
+    },
+    {
+      "num": 33,
+      "name": "Adapter do kierownic Thrustmaster T150 / TMX",
+      "price": 40,
+      "printPrice": 8,
+      "printTime": 3
+    },
+    {
+      "num": 34,
+      "name": "Magnetyczne łopatki do Logitech G29",
+      "price": 40,
+      "printPrice": 6,
+      "printTime": 2
+    },
+    {
+      "num": 35,
+      "name": "Buttonbox USB Stacyjka do symulatorów - TK Customs",
+      "price": 150,
+      "printPrice": 10,
+      "printTime": 13
+    },
+    {
+      "num": 36,
+      "name": "Brake MOD guma do Thrustmaster T3PA wkładka TK",
+      "price": 45,
+      "printPrice": 7,
+      "printTime": 1
+    },
+    {
+      "num": 37,
+      "name": "Buttonbox USB Stacyjka Uchwyt do ETS2 - TK Customs",
+      "price": 150,
+      "printPrice": 10,
+      "printTime": 13
+    },
+    {
+      "num": 38,
+      "name": "Adapter do kierownic Thrustmaster T300 ferrari TX",
+      "price": 30,
+      "printPrice": 7,
+      "printTime": 13
     }
   ]
 }

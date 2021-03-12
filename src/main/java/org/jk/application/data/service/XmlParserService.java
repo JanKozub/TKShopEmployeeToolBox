@@ -47,32 +47,33 @@ public class XmlParserService {
                     );
                     items.add(item);
                 }
-
-                Order order = new Order(
-                        temp+1,
-                        orderElement.getElementsByTagName("id").item(0).getTextContent(),
-                        orderElement.getElementsByTagName("orderDate").item(0).getTextContent(),
-                        new Buyer(
-                                orderElement.getElementsByTagName("name").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("email").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent()
-                        ),
-                        items,
-                        new Payment(
-                                orderElement.getElementsByTagName("lastChanged").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("provider").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("amount").item(0).getTextContent()
-                        ),
-                        new Delivery(
-                                orderElement.getElementsByTagName("methodName").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("street").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("zipCode").item(0).getTextContent(),
-                                orderElement.getElementsByTagName("city").item(0).getTextContent(),
-                                deliveryElement.getElementsByTagName("amount").item(0).getTextContent()
-                        )
-                );
-                orders.add(order);
+                if (!orderElement.getElementsByTagName("status").item(1).getTextContent().equals("CANCELLED")) {
+                    Order order = new Order(
+                            temp + 1,
+                            orderElement.getElementsByTagName("id").item(0).getTextContent(),
+                            orderElement.getElementsByTagName("orderDate").item(0).getTextContent(),
+                            new Buyer(
+                                    orderElement.getElementsByTagName("name").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("email").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent()
+                            ),
+                            items,
+                            new Payment(
+                                    orderElement.getElementsByTagName("lastChanged").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("provider").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("amount").item(0).getTextContent()
+                            ),
+                            new Delivery(
+                                    orderElement.getElementsByTagName("methodName").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("street").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("zipCode").item(0).getTextContent(),
+                                    orderElement.getElementsByTagName("city").item(0).getTextContent(),
+                                    deliveryElement.getElementsByTagName("amount").item(0).getTextContent()
+                            )
+                    );
+                    orders.add(order);
+                }
             }
         }
         return orders;
