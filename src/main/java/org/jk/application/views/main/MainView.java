@@ -1,15 +1,13 @@
 package org.jk.application.views.main;
 
-import java.util.Optional;
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,7 +20,8 @@ import org.jk.application.views.StorageView;
 import org.jk.application.views.myexpenses.MyExpensesView;
 import org.jk.application.views.orders.OrdersView;
 import org.jk.application.views.pricelist.PriceListView;
-import org.jk.application.views.summary.SummaryView;
+
+import java.util.Optional;
 
 @JsModule("./styles/shared-styles.js")
 @CssImport("./styles/views/main/main-view.css")
@@ -80,7 +79,6 @@ public class MainView extends AppLayout {
         return new Tab[] {
                 createTab("Storage", StorageView.class),
                 createTab("Orders", OrdersView.class),
-                createTab("Summary", SummaryView.class),
                 createTab("Price List", PriceListView.class),
                 createTab("My Expenses", MyExpensesView.class)
         };
