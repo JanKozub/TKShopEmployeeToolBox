@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
@@ -36,7 +37,7 @@ public class OrdersView extends VerticalLayout {
 
     private final Grid<Order> ordersGrid = new Grid<>(Order.class);
     private final Grid<Object[]> itemGrid = new Grid<>();
-    Grid<Info> statsGrid = new Grid<>();
+    private final Grid<Info> statsGrid = new Grid<>();
 
     List<Order> orders = new ArrayList<>();
 
@@ -61,49 +62,25 @@ public class OrdersView extends VerticalLayout {
         printsButton.setWidth("80%");
 
         VerticalLayout topLayout = new VerticalLayout(ordersButton, printsButton);
-        topLayout.setWidth("50%");
+        topLayout.setWidth("100%");
         topLayout.setHeight("50%");
         topLayout.getStyle().set("border-bottom", "2px solid rgba(235, 243, 255, 0.2)");
         topLayout.getStyle().set("border-right", "2px solid rgba(235, 243, 255, 0.2)");
 
-        statsGrid.addColumn(new TextRenderer<>(Info::getInfo)).setHeader("Info");
-        statsGrid.addColumn(new TextRenderer<>(Info::getData)).setHeader("Data");
-        statsGrid.setWidth("50%");
+        VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
+        left.setHeight("100%");
+        left.setWidth("50%");
+
+        Grid<String> expensesGrid = new Grid<>();
+        expensesGrid.setWidth("50%");
+        expensesGrid.setHeight("100%");
+        VerticalLayout right = new VerticalLayout(expensesGrid);
+
+        HorizontalLayout mainLayout = new HorizontalLayout(left, expensesGrid);
+        mainLayout.setSizeFull();
 
         setSizeFull();
-        add(upload, topLayout, statsGrid);
-    }
-
-    private VerticalLayout ordersLayout(){
-        ordersGrid.setColumns("id", "date");
-        ordersGrid.addColumn(new ComponentRenderer<>(OrdersView::renderItems)).setHeader("Items");
-        ordersGrid.getColumns().forEach(column -> column.setAutoWidth(true));
-        ordersGrid.setHeight("90%");
-        VerticalLayout layout = new VerticalLayout(ordersGrid);
-        layout.setHeight("90%");
-        return layout;
-    }
-
-    private VerticalLayout printsLayout(){
-        List<PrintInfo> products = PriceListService.getProducts();
-        itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getName())).setHeader("Name");
-        itemGrid.addColumn(new TextRenderer<>(t -> Integer.toString((Integer) t[0]))).setHeader("Psc");
-        itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getPrice() + " PLN")).setHeader("Price/psc");
-        itemGrid.addColumn(new TextRenderer<>(t -> {
-            AtomicReference<String> val = new AtomicReference<>("unknown");
-            products.forEach(product -> {
-                if (product.getProduct().getName().equals(Objects.requireNonNull(parseProduct(t[1])).getName())) {
-                    val.set(String.valueOf((Integer) t[0] * product.getPrintPrice()));
-                }
-            });
-            return String.valueOf(val);
-        })).setHeader("Print price");
-        itemGrid.getColumns().forEach(column -> column.setAutoWidth(true));
-        itemGrid.setHeight("90%");
-
-        VerticalLayout layout = new VerticalLayout(itemGrid);
-        layout.setHeight("90%");
-        return layout;
+        add(upload, mainLayout);
     }
 
     private Dialog createDialog(boolean dialogType) {
@@ -114,32 +91,11 @@ public class OrdersView extends VerticalLayout {
         Button closeBtn = new Button("Close", VaadinIcon.CLOSE_CIRCLE.create(), c -> dialog.close());
         closeBtn.setWidth("100%");
 
-        if (dialogType) dialog.add(ordersLayout());
-        else dialog.add(printsLayout());
+        if (dialogType) dialog.add(Layouts.ordersLayout(ordersGrid));
+        else dialog.add(Layouts.printsLayout(itemGrid));
 
         dialog.add(closeBtn);
         return dialog;
-    }
-
-    private static VerticalLayout renderItems(Order order) {
-        List<Product> items = order.getProducts();
-        VerticalLayout layout = new VerticalLayout();
-        for (int i = 0; i < items.size(); i++) {
-            Label name = new Label("Name: " + items.get(0).getName());
-            Label price = new Label("Price: " + items.get(0).getPrice() + " PLN");
-            Label quantity = new Label("Quantity: " + items.get(0).getQuantity());
-
-            Div line = new Div();
-            line.setWidthFull();
-            line.setHeight("2px");
-            line.getStyle().set("background-color", "rgba(235, 243, 255, 0.9)");
-
-            layout.add(name, price, quantity);
-
-            if (i + 1 != items.size())
-                layout.add(line);
-        }
-        return layout;
     }
 
     private void refreshGrid(InputStream inputStream) {
@@ -162,33 +118,6 @@ public class OrdersView extends VerticalLayout {
             Notification notification = new Notification("Error occured while uploading", 3000, Notification.Position.TOP_END);
             notification.setOpened(true);
             System.out.println(exception.toString());
-        }
-    }
-
-    private Product parseProduct(Object t) {
-        try {
-            return (Product) t;
-        } catch (NullPointerException ex) {
-            System.out.println("null");
-            return null;
-        }
-    }
-
-    public static class Info {
-        private final String info;
-        private final String data;
-
-        public Info(String info, String data) {
-            this.info = info;
-            this.data = data;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-
-        public String getData() {
-            return data;
         }
     }
 }
