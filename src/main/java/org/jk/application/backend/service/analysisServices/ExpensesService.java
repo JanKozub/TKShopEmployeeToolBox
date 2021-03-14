@@ -56,7 +56,7 @@ public class ExpensesService {
         }
     }
 
-    public static void removeExpense(ArrayList<Integer> ids) {
+    public static void removeExpense(List<Integer> ids) {
         try {
             FileReader fileReader = new FileReader(getFile());
 

@@ -74,6 +74,12 @@ public class OrdersView extends VerticalLayout {
         expensesGrid.addColumn(new TextRenderer<>(e -> e.getPrice() + " PLN")).setHeader("Price").setFooter(Layouts.getSum());
         expensesGrid.addColumn(new ComponentRenderer<>(e -> {
             Button button = new Button("Delete");
+            button.addClickListener(c -> {
+                List<Integer> list = new ArrayList<>();
+                list.add(e.getId());
+                ExpensesService.removeExpense(list);
+                expensesGrid.setItems(ExpensesService.getExpenses());
+            });
             button.addThemeVariants(ButtonVariant.LUMO_ERROR);
             return button;
         }));
