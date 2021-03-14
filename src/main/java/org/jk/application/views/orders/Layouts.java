@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import org.jk.application.backend.model.order.Order;
@@ -16,6 +17,7 @@ import org.jk.application.backend.service.dbServices.ProductService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Layouts {
@@ -98,14 +100,42 @@ public class Layouts {
     }
 
     static VerticalLayout productsLayout(ProductService productService, Grid<Product> productGrid) {
+        AtomicBoolean isOpened = new AtomicBoolean(false);
+
+        VerticalLayout printPrice = new VerticalLayout();
+        printPrice.setPadding(false);
+        VerticalLayout printTime = new VerticalLayout();
+        printTime.setPadding(false);
+
+        NumberField printPriceField = new NumberField();
+        NumberField printTimeField = new NumberField();
+
         productGrid.addColumn(new TextRenderer<>(p -> String.valueOf(p.getId()))).setHeader("ID");
         productGrid.addColumn(new TextRenderer<>(Product::getName)).setHeader("Name");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
-        productGrid.addColumn(new TextRenderer<>(p -> p.getPrintPrice() + " PLN")).setHeader("Print Price");
-        productGrid.addColumn(new TextRenderer<>(p -> p.getPrintTime() + " h/psc")).setHeader("Print Time");
+        productGrid.addColumn(new ComponentRenderer<>(e -> printPrice)).setHeader("Print Price");
+        productGrid.addColumn(new ComponentRenderer<>(e -> printTime)).setHeader("Print Time");
         productGrid.addColumn(new ComponentRenderer<>(c -> {
+            printPrice.add(new Label(c.getPrintPrice() + " PLN"));
+            printTime.add(new Label(c.getPrintTime() + " h"));
             Button button = new Button("Edit", VaadinIcon.EDIT.create(), e -> {
 
+                if (!isOpened.get()) {
+                    printPrice.removeAll();
+                    printPriceField.setWidth("70px");
+                    printPrice.add(printPriceField);
+
+                    printTime.removeAll();
+                    printTimeField.setWidth("70px");
+                    printTime.add(printTimeField);
+                } else {
+                    productService.updateProduct(new Product(c.getId(), c.getName(), c.getQuantity(),
+                            c.getPrice(), printPriceField.getValue(), printTimeField.getValue()));
+                    productGrid.setItems(productService.getProducts());
+                    printPrice.removeAll();
+                    printTime.removeAll();
+                }
+                isOpened.set(!isOpened.get());
             });
             button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             button.getStyle().set("background-color", "#1676f3");

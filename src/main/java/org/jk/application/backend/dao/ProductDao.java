@@ -39,4 +39,7 @@ public interface ProductDao {
             @Arg(column = "name", javaType = int.class)
     })
     Collection<String> getNames();
+
+    @Update("UPDATE Products SET printPrice = #{printPrice}, printTime = #{printTime} WHERE id = #{id}")
+    void updateProduct(Product product);
 }

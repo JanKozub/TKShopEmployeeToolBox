@@ -16,4 +16,6 @@ public interface ProductDB {
     Collection<Integer> getIds();
 
     Collection<String> getNames();
+
+    void updateProduct(Product product);
 }

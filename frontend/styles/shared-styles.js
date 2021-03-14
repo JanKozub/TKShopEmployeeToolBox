@@ -20,7 +20,7 @@ $_documentContainer.innerHTML = `
       --lumo-line-height-s: 1.2;
       --lumo-line-height-xs: 1.1;
       --lumo-font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      --lumo-border-radius: calc(var(--lumo-size-m) / 2);
+      --lumo-border-radius: calc(var(--lumo-size-s) / 4);
       --lumo-size-xl: 4rem;
       --lumo-size-l: 3rem;
       --lumo-size-m: 2.5rem;

@@ -41,4 +41,9 @@ public class ProductService implements ProductDB {
     public Collection<String> getNames() {
         return productDao.getNames();
     }
+
+    @Override
+    public void updateProduct(Product product) {
+        productDao.updateProduct(product);
+    }
 }
