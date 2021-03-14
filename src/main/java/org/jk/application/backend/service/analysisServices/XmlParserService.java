@@ -84,4 +84,12 @@ public class XmlParserService {
         }
         return test;
     }
+
+    public double getOrdersPrice() {
+        double sum = 0;
+        for (Object[] o : getCountedItems()) {
+            sum = sum + ((Integer) o[0] * ((Product) o[1]).getPrice());
+        }
+        return sum;
+    }
 }
