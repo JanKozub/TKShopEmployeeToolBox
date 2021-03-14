@@ -1,10 +1,9 @@
 package org.jk.application.views.orders;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,18 +17,16 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.jk.application.backend.model.Expense;
 import org.jk.application.backend.model.order.Order;
-import org.jk.application.backend.model.order.PrintInfo;
-import org.jk.application.backend.model.order.Product;
-import org.jk.application.backend.service.analysisServices.PriceListService;
+import org.jk.application.backend.service.analysisServices.ExpensesService;
 import org.jk.application.backend.service.analysisServices.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.io.InputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Route(value = "orders", layout = MainView.class)
 @PageTitle("Orders")
@@ -53,11 +50,11 @@ public class OrdersView extends VerticalLayout {
         upload.setUploadButton(uploadButton);
         upload.addSucceededListener(e -> refreshGrid(buffer.getInputStream()));
 
-        Dialog ordersDialog = createDialog(true);
+        Dialog ordersDialog = Layouts.createDialog(true, ordersGrid, itemGrid);
         Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
         ordersButton.setWidth("80%");
 
-        Dialog printsDialog = createDialog(false);
+        Dialog printsDialog = Layouts.createDialog(false, ordersGrid, itemGrid);
         Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
         printsButton.setWidth("80%");
 
@@ -68,34 +65,53 @@ public class OrdersView extends VerticalLayout {
         topLayout.getStyle().set("border-right", "2px solid rgba(235, 243, 255, 0.2)");
 
         VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
-        left.setHeight("100%");
         left.setWidth("50%");
 
-        Grid<String> expensesGrid = new Grid<>();
-        expensesGrid.setWidth("50%");
+        Grid<Expense> expensesGrid = new Grid<>();
+        expensesGrid.addColumn(new TextRenderer<>(e -> String.valueOf(e.getId()))).setHeader("ID");
+        expensesGrid.addColumn(new TextRenderer<>(e -> e.getDate().format(DateTimeFormatter.ofPattern("d MMM uuu")))).setHeader("Date");
+        expensesGrid.addColumn(new TextRenderer<>(Expense::getName)).setHeader("Name");
+        expensesGrid.addColumn(new TextRenderer<>(e -> e.getPrice() + " PLN")).setHeader("Price").setFooter(Layouts.getSum());
+        expensesGrid.addColumn(new ComponentRenderer<>(e -> {
+            Button button = new Button("Delete");
+            button.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            return button;
+        }));
+        expensesGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+        expensesGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+        expensesGrid.setItems(ExpensesService.getExpenses());
         expensesGrid.setHeight("100%");
-        VerticalLayout right = new VerticalLayout(expensesGrid);
+        expensesGrid.setWidth("100%");
 
-        HorizontalLayout mainLayout = new HorizontalLayout(left, expensesGrid);
+        Dialog addExpenseDialog = Layouts.createExpenseDialog(expensesGrid);
+        Button addExpense = new Button("Add", VaadinIcon.PLUS_CIRCLE_O.create(), c -> addExpenseDialog.open());
+        addExpense.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        addExpense.setWidth("50%");
+
+        ArrayList<Integer> selected = new ArrayList<>();
+        expensesGrid.asMultiSelect().addValueChangeListener(e -> {
+            selected.clear();
+            e.getValue().forEach(expense -> selected.add(expense.getId()));
+        });
+
+        Button deleteExpense = new Button("Delete", VaadinIcon.MINUS_CIRCLE_O.create(), c -> {
+            ExpensesService.removeExpense(selected);
+            expensesGrid.setItems(ExpensesService.getExpenses());
+        });
+
+        deleteExpense.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        deleteExpense.setWidth("50%");
+        HorizontalLayout buttons = new HorizontalLayout(addExpense, deleteExpense);
+        buttons.setWidth("100%");
+
+        VerticalLayout right = new VerticalLayout(buttons, expensesGrid);
+        right.setWidth("50%");
+
+        HorizontalLayout mainLayout = new HorizontalLayout(left, right);
         mainLayout.setSizeFull();
 
         setSizeFull();
         add(upload, mainLayout);
-    }
-
-    private Dialog createDialog(boolean dialogType) {
-        Dialog dialog = new Dialog();
-        dialog.setHeight("80%");
-        dialog.setWidth("80%");
-
-        Button closeBtn = new Button("Close", VaadinIcon.CLOSE_CIRCLE.create(), c -> dialog.close());
-        closeBtn.setWidth("100%");
-
-        if (dialogType) dialog.add(Layouts.ordersLayout(ordersGrid));
-        else dialog.add(Layouts.printsLayout(itemGrid));
-
-        dialog.add(closeBtn);
-        return dialog;
     }
 
     private void refreshGrid(InputStream inputStream) {
