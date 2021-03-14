@@ -1,15 +1,11 @@
 package org.jk.application.views.orders;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import org.jk.application.backend.model.order.Order;
@@ -17,7 +13,6 @@ import org.jk.application.backend.model.order.PrintInfo;
 import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.analysisServices.PriceListService;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -84,7 +79,7 @@ public class Layouts {
 
     static Grid<Info> renderStatsGrid(Grid<Info> statsGrid) {
         statsGrid.addColumn(new TextRenderer<>(Info::getInfo)).setHeader("Info");
-        statsGrid.addColumn(new TextRenderer<>(Info::getData)).setHeader("Data");
+        statsGrid.addColumn(new TextRenderer<>(i -> i.getData() + " PLN")).setHeader("Data");
         statsGrid.setWidth("100%");
 
         return statsGrid;
@@ -97,5 +92,23 @@ public class Layouts {
             System.out.println("null");
             return null;
         }
+    }
+
+    static VerticalLayout productsLayout() {
+        List<PrintInfo> products = PriceListService.getProducts();
+
+        Grid<PrintInfo> productGrid = new Grid<>();
+
+        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getId()+ "")).setHeader("ID");
+        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getName())).setHeader("Name");
+        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getPrice() + " PLN")).setHeader("Price");
+        productGrid.addColumn(new TextRenderer<>(p -> p.getPrintPrice() + " PLN")).setHeader("Print Price");
+        productGrid.addColumn(new TextRenderer<>(p -> p.getPrintTime() + " h/psc")).setHeader("Print Time");
+
+        productGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+        productGrid.setItems(products);
+        productGrid.setSizeFull();
+
+        return new VerticalLayout(productGrid);
     }
 }

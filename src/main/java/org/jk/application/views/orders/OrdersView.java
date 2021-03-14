@@ -46,23 +46,22 @@ public class OrdersView extends VerticalLayout {
 
         Dialog ordersDialog = Layouts.createDialog(true, ordersGrid, itemGrid);
         Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
-        ordersButton.setWidth("80%");
+        ordersButton.setWidth("100%");
 
         Dialog printsDialog = Layouts.createDialog(false, ordersGrid, itemGrid);
         Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
-        printsButton.setWidth("80%");
+        printsButton.setWidth("100%");
 
         VerticalLayout topLayout = new VerticalLayout(ordersButton, printsButton);
         topLayout.setWidth("100%");
         topLayout.setHeight("50%");
-        topLayout.getStyle().set("border-bottom", "2px solid rgba(235, 243, 255, 0.2)");
-        topLayout.getStyle().set("border-right", "2px solid rgba(235, 243, 255, 0.2)");
+        topLayout.getStyle().set("border", "1px solid rgba(235, 243, 255, 0.2)");
 
         VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
-        left.setWidth("50%");
+        left.setWidth("20%");
 
-        VerticalLayout right = new VerticalLayout();
-        right.setWidth("50%");
+        VerticalLayout right = Layouts.productsLayout();
+        right.setWidth("80%");
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, right);
         mainLayout.setSizeFull();

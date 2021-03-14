@@ -53,34 +53,4 @@ public class PriceListService {
         }
         return printInfos;
     }
-
-    public static double sumPrintPrice(List<PrintInfo> products, List<Entry> entries) {
-        double sum = 0;
-        for (Entry e : entries) {
-            AtomicReference<Double> price = new AtomicReference<>((double) 0);
-
-            products.forEach(product -> {
-                if (product.getProduct().getName().equals(e.getName())) {
-                    price.set(e.getNum() * product.getPrintPrice());
-                }
-            });
-            sum += price.get();
-        }
-        return sum;
-    }
-
-    public static double sumPrice(List<PrintInfo> products, List<Entry> entries) {
-        double sum = 0;
-        for (Entry e : entries) {
-            AtomicReference<Double> price = new AtomicReference<>((double) 0);
-
-            products.forEach(product -> {
-                if (product.getProduct().getName().equals(e.getName())) {
-                    price.set(e.getNum() * product.getProduct().getPrice());
-                }
-            });
-            sum += price.get();
-        }
-        return sum;
-    }
 }

@@ -1,4 +1,4 @@
-package org.jk.application.views;
+package org.jk.application.views.storage;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -31,10 +31,10 @@ public class StorageView extends VerticalLayout {
     private final ItemService itemService;
     private final IdGenerator idGenerator;
 
-    private HorizontalLayout header;
-    private Button inventory;
-    private Button addProject;
-    private Grid<Item> grid;
+    private final HorizontalLayout header;
+    private final Button inventory;
+    private final Button addProject;
+    private final Grid<Item> grid;
 
     private int currentProjectId = 0;
 
