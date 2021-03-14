@@ -31,9 +31,11 @@ import org.jk.application.views.main.MainView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Route(value = "orders", layout = MainView.class)
@@ -41,37 +43,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OrdersView extends VerticalLayout {
 
     private final Grid<Order> grid = new Grid<>(Order.class);
+    private final Grid<Object[]> itemGrid = new Grid<>();
     private final Upload upload;
 
-    private final String filePath = "src/main/resources/files/temp.xml";
     List<Order> orders = new ArrayList<>();
 
     public OrdersView() {
-
         setId("orders-view");
-
-        Dialog ordersDialog = createGridDialog();
-        Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
-        ordersButton.setWidth("80%");
-
-        Dialog printsDialog = createPrintsDialog();
-        Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
-        printsButton.setWidth("80%");
-
-        VerticalLayout buttons = new VerticalLayout(ordersButton, printsButton);
-        buttons.setWidth("50%");
-        HorizontalLayout topLayout = new HorizontalLayout(buttons);
-        topLayout.setWidth("100%");
-        topLayout.setHeight("50%");
-
-        Label totalOrdersPrice = new Label("Total Orders Price: 99999PLN");
-        Label totalPrintsPrice = new Label("Total Prints Price: 1340PLN");
-        Label totalExpensesPrice = new Label("Total expenses Price: 930PLN");
-
-        HorizontalLayout bottomLayout = new HorizontalLayout(
-                        new VerticalLayout(totalOrdersPrice, totalPrintsPrice, totalExpensesPrice));
-        bottomLayout.setWidth("100%");
-        bottomLayout.setHeight("50%");
 
         MemoryBuffer buffer = new MemoryBuffer();
         upload = new Upload(buffer);
@@ -82,17 +60,31 @@ public class OrdersView extends VerticalLayout {
         upload.setUploadButton(uploadButton);
         upload.addSucceededListener(e ->
         {
-            try {
-                File file = new File(filePath);
-                FileUtils.copyInputStreamToFile(buffer.getInputStream(), file);
-                refreshGrid();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
+            refreshGrid(buffer.getInputStream());
             upload.setDropAllowed(true);
         });
 
-        refreshGrid();
+        Dialog ordersDialog = createGridDialog();
+        Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
+        ordersButton.setWidth("80%");
+
+        Dialog printsDialog = createPrintsDialog();
+        Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
+        printsButton.setWidth("80%");
+
+        VerticalLayout topLayout = new VerticalLayout(ordersButton, printsButton);
+        topLayout.setWidth("50%");
+        topLayout.setHeight("50%");
+        topLayout.getStyle().set("border-bottom", "2px solid rgba(235, 243, 255, 0.2)");
+        topLayout.getStyle().set("border-right", "2px solid rgba(235, 243, 255, 0.2)");
+
+        Label totalOrdersPrice = new Label("Total Orders Price: 99999PLN");
+        Label totalPrintsPrice = new Label("Total Prints Price: 1340PLN");
+        Label totalExpensesPrice = new Label("Total expenses Price: 930PLN");
+
+        VerticalLayout bottomLayout = new VerticalLayout(totalOrdersPrice, totalPrintsPrice, totalExpensesPrice);
+        bottomLayout.setWidth("50%");
+        bottomLayout.setHeight("50%");
 
         setSizeFull();
         add(upload, topLayout, bottomLayout);
@@ -120,53 +112,26 @@ public class OrdersView extends VerticalLayout {
         dialog.setWidth("80%");
         dialog.setHeight("80%");
 
-        List<Entry> entries = new ArrayList<>();
         List<PrintInfo> products = PriceListService.getProducts();
 
-        for (Order order : orders) {
-            List<Product> items = order.getProducts();
+//        int sum = 0;
+//        for (Entry entry : entries) {
+//            sum = sum + entry.getNum();
+//        }
 
-            for (int i = 0; i < items.size(); i++) {
-                int finalI = i;
-                Product item = items.get(i);
-                Entry entry = entries.stream().filter(p -> p.getName().equals(items.get(finalI).getName())).findFirst().orElse(null);
-                if (entry == null) {
-                    entries.add(new Entry(item.getName(), 1, item.getPrice()));
-                } else {
-                    entries.remove(entry);
-                    entries.add(new Entry(item.getName(), entry.getNum() + item.getQuantity(), item.getPrice()));
-                }
-            }
-        }
-
-        int sum = 0;
-        for (Entry entry : entries) {
-            sum = sum + entry.getNum();
-        }
-
-        ListDataProvider<Entry> dataProvider =
-                DataProvider.ofCollection(entries);
-
-        dataProvider.setSortOrder(Entry::getNum, SortDirection.DESCENDING);
-
-        Grid<Entry> itemGrid = new Grid<>();
-        itemGrid.addColumn(new TextRenderer<>(Entry::getName))
-                .setHeader("Name").setFooter("Ilość przedmiotów razem: " + sum);
-        itemGrid.addColumn(new TextRenderer<>(entry -> Integer.toString(entry.getNum()))).setHeader("Psc");
-        itemGrid.addColumn(new TextRenderer<>(entry -> entry.getPrice() + " PLN")).setHeader("Price/psc")
-                .setFooter(PriceListService.sumPrice(products, entries) + " PLN");
-        itemGrid.addColumn(new TextRenderer<>(entry -> {
+        itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getName())).setHeader("Name").setFooter("Ilość przedmiotów razem: ");
+        itemGrid.addColumn(new TextRenderer<>(t -> Integer.toString((Integer) t[0]))).setHeader("Psc");
+        itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getPrice() + " PLN")).setHeader("Price/psc");
+        itemGrid.addColumn(new TextRenderer<>(t -> {
             AtomicReference<String> val = new AtomicReference<>("unknown");
             products.forEach(product -> {
-                if (product.getProduct().getName().equals(entry.getName())) {
-                    val.set(String.valueOf(entry.getNum() * product.getPrintPrice()));
+                if (product.getProduct().getName().equals(Objects.requireNonNull(parseProduct(t[1])).getName())) {
+                    val.set(String.valueOf((Integer) t[0] * product.getPrintPrice()));
                 }
             });
             return String.valueOf(val);
-        })).setHeader("Print price").setFooter(PriceListService.sumPrintPrice(products, entries) + " PLN");
-
+        })).setHeader("Print price");
         itemGrid.getColumns().forEach(column -> column.setAutoWidth(true));
-        itemGrid.setItems(dataProvider);
         itemGrid.setHeight("90%");
 
         Button closeBtn = new Button("Close", VaadinIcon.CLOSE_CIRCLE.create(), c -> dialog.close());
@@ -197,16 +162,33 @@ public class OrdersView extends VerticalLayout {
         return layout;
     }
 
-    private void refreshGrid() {
+    private void refreshGrid(InputStream inputStream) {
         try {
-            XmlParserService xmlParserService = new XmlParserService(filePath);
+            XmlParserService xmlParserService = new XmlParserService(inputStream);
             orders = xmlParserService.getOrders();
             grid.setItems(orders);
+
+            refreshItemGrid(xmlParserService.getCountedItems());
             upload.setDropLabel(new Span("File has been loaded"));
         } catch (Exception exception) {
             Notification notification = new Notification("Error occured while uploading", 3000, Notification.Position.TOP_END);
             notification.setOpened(true);
             System.out.println(exception.toString());
+        }
+    }
+
+    private void refreshItemGrid(List<Object[]> entries) {
+        ListDataProvider<Object[]> dataProvider = DataProvider.ofCollection(entries);
+        dataProvider.setSortOrder(t -> (Integer) t[0], SortDirection.DESCENDING);
+        itemGrid.setItems(dataProvider);
+    }
+
+    private Product parseProduct(Object t) {
+        try {
+            return (Product) t;
+        } catch (NullPointerException ex) {
+            System.out.println("null");
+            return null;
         }
     }
 }

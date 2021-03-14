@@ -55,7 +55,7 @@ public class MyExpensesView extends VerticalLayout {
 
             sumLabel.setText(getSum());
 
-            refreshGrid();
+            expenseGrid.setItems(ExpensesService.getExpenses());
         });
 
         addExpenseDialog.add(new VerticalLayout(nameField, datePicker, numberField, submitButton));
@@ -90,7 +90,7 @@ public class MyExpensesView extends VerticalLayout {
         expenseGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         expenseGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         expenseGrid.setHeightByRows(true);
-        refreshGrid();
+        expenseGrid.setItems(ExpensesService.getExpenses());
 
         ArrayList<Integer> selected = new ArrayList<>();
         expenseGrid.asMultiSelect().addValueChangeListener(e -> {
@@ -100,7 +100,7 @@ public class MyExpensesView extends VerticalLayout {
 
         removeButton.addClickListener(click -> {
             ExpensesService.removeExpense(selected);
-            refreshGrid();
+            expenseGrid.setItems(ExpensesService.getExpenses());
         });
 
         setSizeFull();
@@ -114,9 +114,4 @@ public class MyExpensesView extends VerticalLayout {
 
         return sum + " PLN";
     }
-
-    private void refreshGrid() {
-        expenseGrid.setItems(ExpensesService.getExpenses());
-    }
-
 }

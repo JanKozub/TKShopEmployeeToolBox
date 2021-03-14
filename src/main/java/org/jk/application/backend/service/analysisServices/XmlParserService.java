@@ -1,6 +1,6 @@
 package org.jk.application.backend.service.analysisServices;
 
-import org.jk.application.backend.model.order.*;
+import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.model.order.Product;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,25 +17,22 @@ public class XmlParserService {
 
     private final Document doc;
 
-    public XmlParserService(String filePath) throws Exception {
-        File inputFile = new File(filePath);
+    public XmlParserService(InputStream inputStream) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        doc = dBuilder.parse(inputFile);
+        doc = dBuilder.parse(inputStream);
         doc.getDocumentElement().normalize();
     }
 
     public List<Order> getOrders() {
         List<Order> orders = new ArrayList<>();
         NodeList orderList = doc.getElementsByTagName("order");
-        NodeList deliveryList = doc.getElementsByTagName("cost");
         NodeList lineItems = doc.getElementsByTagName("lineItems");
         for (int temp = 0; temp < orderList.getLength(); temp++) {
             Node nNode = orderList.item(temp);
 
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element orderElement = (Element) nNode;
-                Element deliveryElement = (Element) deliveryList.item(temp);
                 Element lineElement = (Element) lineItems.item(temp);
 
                 List<Product> items = new ArrayList<>();
@@ -59,5 +56,32 @@ public class XmlParserService {
             }
         }
         return orders;
+    }
+
+    public List<Object[]> getCountedItems() {
+
+        List<Object[]> test = new ArrayList<>();
+
+        for (Order order : getOrders()) {
+            List<Product> items = order.getProducts();
+
+            for (int i = 0; i < items.size(); i++) {
+                int finalI = i;
+                Product item = items.get(i);
+
+                Object[] entry = test.stream().filter(p -> {
+                    Product t = (Product) p[1];
+                    return t.getName().equals(items.get(finalI).getName());
+                }).findFirst().orElse(null);
+
+                if (entry == null) {
+                    test.add(new Object[]{1, new Product(item.getId(), item.getName(), item.getQuantity(), item.getPrice())});
+                } else {
+                    test.remove(entry);
+                    test.add(new Object[]{(int)entry[0] + item.getQuantity(), new Product(item.getId(), item.getName(), item.getQuantity(), item.getPrice())});
+                }
+            }
+        }
+        return test;
     }
 }
