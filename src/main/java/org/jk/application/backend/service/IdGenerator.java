@@ -1,21 +1,16 @@
 package org.jk.application.backend.service;
 
 import org.jk.application.backend.service.dbServices.ItemService;
+import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.backend.service.dbServices.ProjectService;
 
 import java.util.Random;
 
 public class IdGenerator {
 
-    private final ProjectService projectService;
-    private final ItemService itemService;
-
-    public IdGenerator(ProjectService projectService, ItemService itemService) {
-        this.projectService = projectService;
-        this.itemService = itemService;
+    public IdGenerator() {
     }
-
-    public int generateProjectId() {
+    public static int generateProjectId(ProjectService projectService) {
         int id = getRandomNumber();
 
         while (projectService.getIds().contains(id)) {
@@ -24,7 +19,7 @@ public class IdGenerator {
         return id;
     }
 
-    public int generateItemId() {
+    public static int generateItemId(ItemService itemService) {
         int id = getRandomNumber();
 
         while(itemService.getIds().contains(id)) {
@@ -33,7 +28,15 @@ public class IdGenerator {
         return id;
     }
 
-    private int getRandomNumber() {
+    public static int generateProductId(ProductService productService) {
+        int id = getRandomNumber();
+        while(productService.getIds().contains(id)) {
+            id = getRandomNumber();
+        }
+        return id;
+    }
+
+    private static int getRandomNumber() {
         Random random = new Random();
         return random.ints(1000, 10000).findFirst().orElse(-1);
     }

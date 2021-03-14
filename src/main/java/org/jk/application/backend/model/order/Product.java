@@ -1,23 +1,27 @@
 package org.jk.application.backend.model.order;
 
 public class Product {
-    private String id;
+    private int id;
     private String name;
     private int quantity;
     private double price;
+    private double printPrice;
+    private double printTime;
 
-    public Product(String id, String name, int quantity, double price) {
+    public Product(int id, String name, int quantity, double price, double printPrice, double printTime) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
+        this.printPrice = printPrice;
+        this.printTime = printTime;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -43,5 +47,21 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getPrintPrice() {
+        return printPrice;
+    }
+
+    public void setPrintPrice(double printPrice) {
+        this.printPrice = printPrice;
+    }
+
+    public double getPrintTime() {
+        return printTime;
+    }
+
+    public void setPrintTime(double printTime) {
+        this.printTime = printTime;
     }
 }

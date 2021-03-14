@@ -9,16 +9,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import org.jk.application.backend.model.order.Order;
-import org.jk.application.backend.model.order.PrintInfo;
 import org.jk.application.backend.model.order.Product;
-import org.jk.application.backend.service.analysisServices.PriceListService;
+import org.jk.application.backend.service.dbServices.ProductService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Layouts {
-    static Dialog createDialog(boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> itemGrid) {
+
+    static Dialog createDialog(ProductService productService, boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> itemGrid) {
         Dialog dialog = new Dialog();
         dialog.setHeight("80%");
         dialog.setWidth("80%");
@@ -27,7 +28,7 @@ public class Layouts {
         closeBtn.setWidth("100%");
 
         if (dialogType) dialog.add(ordersLayout(ordersGrid));
-        else dialog.add(printsLayout(itemGrid));
+        else dialog.add(printsLayout(productService, itemGrid));
 
         dialog.add(closeBtn);
         return dialog;
@@ -43,15 +44,16 @@ public class Layouts {
         return layout;
     }
 
-    static VerticalLayout printsLayout(Grid<Object[]> itemGrid) {
-        List<PrintInfo> products = PriceListService.getProducts();
+    static VerticalLayout printsLayout(ProductService productService, Grid<Object[]> itemGrid) {
+        List<Product> products = new ArrayList<>(productService.getProducts());
+
         itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getName())).setHeader("Name");
         itemGrid.addColumn(new TextRenderer<>(t -> Integer.toString((Integer) t[0]))).setHeader("Psc");
         itemGrid.addColumn(new TextRenderer<>(t -> Objects.requireNonNull(parseProduct(t[1])).getPrice() + " PLN")).setHeader("Price/psc");
         itemGrid.addColumn(new TextRenderer<>(t -> {
             AtomicReference<String> val = new AtomicReference<>("unknown");
             products.forEach(product -> {
-                if (product.getProduct().getName().equals(Objects.requireNonNull(parseProduct(t[1])).getName())) {
+                if (product.getName().equals(Objects.requireNonNull(parseProduct(t[1])).getName())) {
                     val.set(String.valueOf((Integer) t[0] * product.getPrintPrice()));
                 }
             });
@@ -94,14 +96,14 @@ public class Layouts {
         }
     }
 
-    static VerticalLayout productsLayout() {
-        List<PrintInfo> products = PriceListService.getProducts();
+    static VerticalLayout productsLayout(ProductService productService) {
+        List<Product> products = productService.getProducts();
 
-        Grid<PrintInfo> productGrid = new Grid<>();
+        Grid<Product> productGrid = new Grid<>();
 
-        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getId()+ "")).setHeader("ID");
-        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getName())).setHeader("Name");
-        productGrid.addColumn(new TextRenderer<>(p -> p.getProduct().getPrice() + " PLN")).setHeader("Price");
+        productGrid.addColumn(new TextRenderer<>(p -> String.valueOf(p.getId()))).setHeader("ID");
+        productGrid.addColumn(new TextRenderer<>(Product::getName)).setHeader("Name");
+        productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrintPrice() + " PLN")).setHeader("Print Price");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrintTime() + " h/psc")).setHeader("Print Time");
 

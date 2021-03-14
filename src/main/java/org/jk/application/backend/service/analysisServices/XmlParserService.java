@@ -2,6 +2,8 @@ package org.jk.application.backend.service.analysisServices;
 
 import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.model.order.Product;
+import org.jk.application.backend.service.IdGenerator;
+import org.jk.application.backend.service.dbServices.ProductService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,8 +18,10 @@ import java.util.List;
 public class XmlParserService {
 
     private final Document doc;
+    private final ProductService productService;
 
-    public XmlParserService(InputStream inputStream) throws Exception {
+    public XmlParserService(InputStream inputStream, ProductService productService) throws Exception {
+        this.productService = productService;
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(inputStream);
@@ -38,10 +42,12 @@ public class XmlParserService {
                 List<Product> items = new ArrayList<>();
                 for (int i = 0; i < lineElement.getElementsByTagName("offerName").getLength(); i++) {
                     Product item = new Product(
-                            lineElement.getElementsByTagName("offerId").item(i).getTextContent(),
+                            IdGenerator.generateProductId(productService),
                             lineElement.getElementsByTagName("offerName").item(i).getTextContent(),
                             Integer.parseInt(lineElement.getElementsByTagName("quantity").item(i).getTextContent()),
-                            Double.parseDouble(lineElement.getElementsByTagName("amount").item(i).getTextContent())
+                            Double.parseDouble(lineElement.getElementsByTagName("amount").item(i).getTextContent()),
+                            -1,
+                            -1
                     );
                     items.add(item);
                 }
@@ -67,7 +73,7 @@ public class XmlParserService {
 
             for (int i = 0; i < items.size(); i++) {
                 int finalI = i;
-                Product item = items.get(i);
+                Product product = items.get(i);
 
                 Object[] entry = test.stream().filter(p -> {
                     Product t = (Product) p[1];
@@ -75,10 +81,16 @@ public class XmlParserService {
                 }).findFirst().orElse(null);
 
                 if (entry == null) {
-                    test.add(new Object[]{1, new Product(item.getId(), item.getName(), item.getQuantity(), item.getPrice())});
+                    test.add(new Object[]{1,
+                            new Product(product.getId(), product.getName(),
+                                    product.getQuantity(), product.getPrice(),
+                                    product.getPrintPrice(), product.getPrintTime())});
                 } else {
                     test.remove(entry);
-                    test.add(new Object[]{(int)entry[0] + item.getQuantity(), new Product(item.getId(), item.getName(), item.getQuantity(), item.getPrice())});
+                    test.add(new Object[]{(int) entry[0] + product.getQuantity(),
+                            new Product(product.getId(), product.getName(),
+                                    product.getQuantity(), product.getPrice(),
+                                    product.getPrintPrice(), product.getPrintTime())});
                 }
             }
         }

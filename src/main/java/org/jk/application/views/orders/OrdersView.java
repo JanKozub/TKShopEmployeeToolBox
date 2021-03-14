@@ -16,6 +16,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.service.analysisServices.XmlParserService;
+import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.views.main.MainView;
 
 import java.io.InputStream;
@@ -26,13 +27,16 @@ import java.util.List;
 @PageTitle("Orders")
 public class OrdersView extends VerticalLayout {
 
+    private final ProductService productService;
+
     private final Grid<Order> ordersGrid = new Grid<>(Order.class);
     private final Grid<Object[]> itemGrid = new Grid<>();
     private final Grid<Info> statsGrid = new Grid<>();
 
     List<Order> orders = new ArrayList<>();
 
-    public OrdersView() {
+    public OrdersView(ProductService productService) {
+        this.productService = productService;
         setId("orders-view");
 
         MemoryBuffer buffer = new MemoryBuffer();
@@ -44,11 +48,11 @@ public class OrdersView extends VerticalLayout {
         upload.setUploadButton(uploadButton);
         upload.addSucceededListener(e -> refreshGrid(buffer.getInputStream()));
 
-        Dialog ordersDialog = Layouts.createDialog(true, ordersGrid, itemGrid);
+        Dialog ordersDialog = Layouts.createDialog(productService, true, ordersGrid, itemGrid);
         Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
         ordersButton.setWidth("100%");
 
-        Dialog printsDialog = Layouts.createDialog(false, ordersGrid, itemGrid);
+        Dialog printsDialog = Layouts.createDialog(productService, false, ordersGrid, itemGrid);
         Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
         printsButton.setWidth("100%");
 
@@ -60,7 +64,7 @@ public class OrdersView extends VerticalLayout {
         VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
         left.setWidth("20%");
 
-        VerticalLayout right = Layouts.productsLayout();
+        VerticalLayout right = Layouts.productsLayout(productService);
         right.setWidth("80%");
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, right);
@@ -72,7 +76,7 @@ public class OrdersView extends VerticalLayout {
 
     private void refreshGrid(InputStream inputStream) {
         try {
-            XmlParserService xmlParserService = new XmlParserService(inputStream);
+            XmlParserService xmlParserService = new XmlParserService(inputStream, productService);
             orders = xmlParserService.getOrders();
             ordersGrid.setItems(orders);
 

@@ -18,6 +18,7 @@ import org.jk.application.backend.model.storage.Item;
 import org.jk.application.backend.model.storage.Project;
 import org.jk.application.backend.service.IdGenerator;
 import org.jk.application.backend.service.dbServices.ItemService;
+import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.backend.service.dbServices.ProjectService;
 import org.jk.application.views.main.MainView;
 
@@ -29,7 +30,6 @@ public class StorageView extends VerticalLayout {
 
     private final ProjectService projectService;
     private final ItemService itemService;
-    private final IdGenerator idGenerator;
 
     private final HorizontalLayout header;
     private final Button inventory;
@@ -41,7 +41,6 @@ public class StorageView extends VerticalLayout {
     public StorageView(ProjectService projectService, ItemService itemService) {
         this.projectService = projectService;
         this.itemService = itemService;
-        this.idGenerator = new IdGenerator(projectService, itemService);
 
         setId("storage-view");
 
@@ -103,7 +102,7 @@ public class StorageView extends VerticalLayout {
         addButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         addButton.addClickListener(
                 clk -> {
-                    projectService.addProject(new Project(idGenerator.generateProjectId(), projectName.getValue()));
+                    projectService.addProject(new Project(IdGenerator.generateProjectId(projectService), projectName.getValue()));
                     refreshTopBar();
                     projectName.clear();
                     dialog.close();
@@ -125,7 +124,7 @@ public class StorageView extends VerticalLayout {
         itemDemand.setWidth("100%");
         Button confirmBtn = new Button("Add", c -> {
             itemService.addItem(new Item(
-                    idGenerator.generateItemId(), currentProjectId,
+                    IdGenerator.generateItemId(itemService), currentProjectId,
                     itemName.getValue(), itemQuantity.getValue().intValue(),
                     itemDemand.getValue().intValue()));
             itemName.clear();
