@@ -36,4 +36,9 @@ public class ProductService implements ProductDB {
     public Collection<Integer> getIds() {
         return productDao.getIds();
     }
+
+    @Override
+    public Collection<String> getNames() {
+        return productDao.getNames();
+    }
 }

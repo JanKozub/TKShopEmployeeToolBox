@@ -1,8 +1,7 @@
-package org.jk.application.backend.service.analysisServices;
+package org.jk.application.backend.service;
 
 import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.model.order.Product;
-import org.jk.application.backend.service.IdGenerator;
 import org.jk.application.backend.service.dbServices.ProductService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,7 +65,7 @@ public class XmlParserService {
 
     public List<Object[]> getCountedItems() {
 
-        List<Object[]> test = new ArrayList<>();
+        List<Object[]> countedProducts = new ArrayList<>();
 
         for (Order order : getOrders()) {
             List<Product> items = order.getProducts();
@@ -75,26 +74,26 @@ public class XmlParserService {
                 int finalI = i;
                 Product product = items.get(i);
 
-                Object[] entry = test.stream().filter(p -> {
+                Object[] entry = countedProducts.stream().filter(p -> {
                     Product t = (Product) p[1];
                     return t.getName().equals(items.get(finalI).getName());
                 }).findFirst().orElse(null);
 
                 if (entry == null) {
-                    test.add(new Object[]{1,
+                    countedProducts.add(new Object[]{1,
                             new Product(product.getId(), product.getName(),
                                     product.getQuantity(), product.getPrice(),
                                     product.getPrintPrice(), product.getPrintTime())});
                 } else {
-                    test.remove(entry);
-                    test.add(new Object[]{(int) entry[0] + product.getQuantity(),
+                    countedProducts.remove(entry);
+                    countedProducts.add(new Object[]{(int) entry[0] + product.getQuantity(),
                             new Product(product.getId(), product.getName(),
                                     product.getQuantity(), product.getPrice(),
                                     product.getPrintPrice(), product.getPrintTime())});
                 }
             }
         }
-        return test;
+        return countedProducts;
     }
 
     public double getOrdersPrice() {
@@ -103,5 +102,14 @@ public class XmlParserService {
             sum = sum + ((Integer) o[0] * ((Product) o[1]).getPrice());
         }
         return sum;
+    }
+
+    public void updateProducts(List<Object[]> products) {
+        for (Object[] o : products) {
+            Product p = (Product) o[1];
+            if (!productService.getNames().contains(p.getName())) {
+                productService.addProduct(p);
+            }
+        }
     }
 }

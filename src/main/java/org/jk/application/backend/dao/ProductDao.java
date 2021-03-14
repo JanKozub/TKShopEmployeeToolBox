@@ -33,4 +33,10 @@ public interface ProductDao {
             @Arg(column = "id", javaType = int.class)
     })
     Collection<Integer> getIds();
+
+    @Select("SELECT * FROM Products")
+    @ConstructorArgs({
+            @Arg(column = "name", javaType = int.class)
+    })
+    Collection<String> getNames();
 }

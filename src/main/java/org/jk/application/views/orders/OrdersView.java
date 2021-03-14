@@ -5,6 +5,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -15,7 +16,8 @@ import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.jk.application.backend.model.order.Order;
-import org.jk.application.backend.service.analysisServices.XmlParserService;
+import org.jk.application.backend.model.order.Product;
+import org.jk.application.backend.service.XmlParserService;
 import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.views.main.MainView;
 
@@ -30,8 +32,9 @@ public class OrdersView extends VerticalLayout {
     private final ProductService productService;
 
     private final Grid<Order> ordersGrid = new Grid<>(Order.class);
-    private final Grid<Object[]> itemGrid = new Grid<>();
+    private final Grid<Object[]> printsGrid = new Grid<>();
     private final Grid<Info> statsGrid = new Grid<>();
+    private final Grid<Product> productGrid = new Grid<>();
 
     List<Order> orders = new ArrayList<>();
 
@@ -47,12 +50,13 @@ public class OrdersView extends VerticalLayout {
         Button uploadButton = new Button("Upload");
         upload.setUploadButton(uploadButton);
         upload.addSucceededListener(e -> refreshGrid(buffer.getInputStream()));
+        upload.setDropAllowed(true);
 
-        Dialog ordersDialog = Layouts.createDialog(productService, true, ordersGrid, itemGrid);
+        Dialog ordersDialog = Layouts.createDialog(productService, true, ordersGrid, printsGrid);
         Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
         ordersButton.setWidth("100%");
 
-        Dialog printsDialog = Layouts.createDialog(productService, false, ordersGrid, itemGrid);
+        Dialog printsDialog = Layouts.createDialog(productService, false, ordersGrid, printsGrid);
         Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
         printsButton.setWidth("100%");
 
@@ -64,7 +68,7 @@ public class OrdersView extends VerticalLayout {
         VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
         left.setWidth("20%");
 
-        VerticalLayout right = Layouts.productsLayout(productService);
+        VerticalLayout right = Layouts.productsLayout(productService, productGrid);
         right.setWidth("80%");
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, right);
@@ -76,13 +80,21 @@ public class OrdersView extends VerticalLayout {
 
     private void refreshGrid(InputStream inputStream) {
         try {
+            Notification notification = new Notification("File has been uploaded!", 3000, Notification.Position.TOP_END);
+            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            notification.setOpened(true);
+
             XmlParserService xmlParserService = new XmlParserService(inputStream, productService);
             orders = xmlParserService.getOrders();
             ordersGrid.setItems(orders);
 
-            ListDataProvider<Object[]> dataProvider = DataProvider.ofCollection(xmlParserService.getCountedItems());
+            List<Object[]> countedProducts = xmlParserService.getCountedItems();
+            ListDataProvider<Object[]> dataProvider = DataProvider.ofCollection(countedProducts);
             dataProvider.setSortOrder(t -> (Integer) t[0], SortDirection.DESCENDING);
-            itemGrid.setItems(dataProvider);
+            printsGrid.setItems(dataProvider);
+
+            xmlParserService.updateProducts(countedProducts);
+            productGrid.setItems(productService.getProducts());
 
             List<Info> infos = new ArrayList<>();
             infos.add(new Info("Order price", Double.toString(xmlParserService.getOrdersPrice())));
@@ -92,6 +104,7 @@ public class OrdersView extends VerticalLayout {
 
         } catch (Exception exception) {
             Notification notification = new Notification("Error occured while uploading", 3000, Notification.Position.TOP_END);
+            notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             notification.setOpened(true);
             System.out.println(exception.toString());
         }

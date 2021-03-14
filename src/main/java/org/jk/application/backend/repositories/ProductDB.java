@@ -14,4 +14,6 @@ public interface ProductDB {
     List<Product> getProducts();
 
     Collection<Integer> getIds();
+
+    Collection<String> getNames();
 }

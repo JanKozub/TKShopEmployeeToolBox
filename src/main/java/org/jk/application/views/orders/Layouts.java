@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Layouts {
 
-    static Dialog createDialog(ProductService productService, boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> itemGrid) {
+    static Dialog createDialog(ProductService productService, boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> printsGrid) {
         Dialog dialog = new Dialog();
         dialog.setHeight("80%");
         dialog.setWidth("80%");
@@ -28,7 +28,7 @@ public class Layouts {
         closeBtn.setWidth("100%");
 
         if (dialogType) dialog.add(ordersLayout(ordersGrid));
-        else dialog.add(printsLayout(productService, itemGrid));
+        else dialog.add(printsLayout(productService, printsGrid));
 
         dialog.add(closeBtn);
         return dialog;
@@ -96,11 +96,7 @@ public class Layouts {
         }
     }
 
-    static VerticalLayout productsLayout(ProductService productService) {
-        List<Product> products = productService.getProducts();
-
-        Grid<Product> productGrid = new Grid<>();
-
+    static VerticalLayout productsLayout(ProductService productService, Grid<Product> productGrid) {
         productGrid.addColumn(new TextRenderer<>(p -> String.valueOf(p.getId()))).setHeader("ID");
         productGrid.addColumn(new TextRenderer<>(Product::getName)).setHeader("Name");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
@@ -108,7 +104,7 @@ public class Layouts {
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrintTime() + " h/psc")).setHeader("Print Time");
 
         productGrid.getColumns().forEach(column -> column.setAutoWidth(true));
-        productGrid.setItems(products);
+        productGrid.setItems(productService.getProducts());
         productGrid.setSizeFull();
 
         return new VerticalLayout(productGrid);
