@@ -1,4 +1,4 @@
-package org.jk.application.data.model;
+package org.jk.application.backend.model;
 
 public class Entry {
 

@@ -1,6 +1,6 @@
-package org.jk.application.data.service;
+package org.jk.application.backend.service.analysisServices;
 
-import org.jk.application.data.model.Expense;
+import org.jk.application.backend.model.Expense;
 
 import java.io.File;
 import java.io.FileReader;

@@ -1,10 +1,10 @@
-package org.jk.application.data.service;
+package org.jk.application.backend.service.analysisServices;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import org.jk.application.data.model.Entry;
-import org.jk.application.data.model.product.Product;
+import org.jk.application.backend.model.Entry;
+import org.jk.application.backend.model.product.Product;
 
 import java.io.File;
 import java.io.IOException;

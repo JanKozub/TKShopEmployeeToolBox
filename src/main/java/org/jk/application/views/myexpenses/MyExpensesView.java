@@ -14,13 +14,10 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.Lumo;
-import org.jk.application.data.model.Expense;
-import org.jk.application.data.service.ExpensesService;
+import org.jk.application.backend.model.Expense;
+import org.jk.application.backend.service.analysisServices.ExpensesService;
 import org.jk.application.views.main.MainView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

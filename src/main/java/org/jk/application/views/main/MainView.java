@@ -18,6 +18,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
+import org.jk.application.views.StorageView;
 import org.jk.application.views.myexpenses.MyExpensesView;
 import org.jk.application.views.orders.OrdersView;
 import org.jk.application.views.pricelist.PriceListView;
@@ -80,10 +81,11 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[] {
-            createTab("Orders", OrdersView.class),
-            createTab("Summary", SummaryView.class),
-            createTab("Price List", PriceListView.class),
-            createTab("My Expenses", MyExpensesView.class)
+                createTab("Storage", StorageView.class),
+                createTab("Orders", OrdersView.class),
+                createTab("Summary", SummaryView.class),
+                createTab("Price List", PriceListView.class),
+                createTab("My Expenses", MyExpensesView.class)
         };
     }
 

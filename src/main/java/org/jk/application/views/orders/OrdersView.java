@@ -15,13 +15,12 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.commons.io.FileUtils;
-import org.jk.application.data.model.order.Item;
-import org.jk.application.data.model.order.Order;
-import org.jk.application.data.service.XmlParserService;
+import org.jk.application.backend.model.order.Item;
+import org.jk.application.backend.model.order.Order;
+import org.jk.application.backend.service.analysisServices.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "orders", layout = MainView.class)
@@ -31,9 +30,12 @@ public class OrdersView extends Div {
 
     private Grid<Order> grid;
     private Upload upload;
+
     private final String filePath = "src/main/resources/files/temp.xml";
 
     public OrdersView() {
+
+
         setId("orders-view");
 
         grid = new Grid<>(Order.class);

@@ -1,7 +1,6 @@
 package org.jk.application.views.summary;
 
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -9,12 +8,12 @@ import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.jk.application.data.model.Entry;
-import org.jk.application.data.model.order.Item;
-import org.jk.application.data.model.order.Order;
-import org.jk.application.data.model.product.Product;
-import org.jk.application.data.service.PriceListService;
-import org.jk.application.data.service.XmlParserService;
+import org.jk.application.backend.model.Entry;
+import org.jk.application.backend.model.order.Item;
+import org.jk.application.backend.model.order.Order;
+import org.jk.application.backend.model.product.Product;
+import org.jk.application.backend.service.analysisServices.PriceListService;
+import org.jk.application.backend.service.analysisServices.XmlParserService;
 import org.jk.application.views.main.MainView;
 
 import java.util.ArrayList;

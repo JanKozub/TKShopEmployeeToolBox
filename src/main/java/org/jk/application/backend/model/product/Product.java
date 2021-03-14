@@ -1,4 +1,4 @@
-package org.jk.application.data.model.product;
+package org.jk.application.backend.model.product;
 
 public class Product {
     private int num;

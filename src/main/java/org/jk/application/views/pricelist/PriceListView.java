@@ -1,21 +1,14 @@
 package org.jk.application.views.pricelist;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.jk.application.data.model.product.Product;
-import org.jk.application.data.service.PriceListService;
+import org.jk.application.backend.model.product.Product;
+import org.jk.application.backend.service.analysisServices.PriceListService;
 import org.jk.application.views.main.MainView;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "price-list-view", layout = MainView.class)

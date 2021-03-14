@@ -1,6 +1,6 @@
-package org.jk.application.data.service;
+package org.jk.application.backend.service.analysisServices;
 
-import org.jk.application.data.model.order.*;
+import org.jk.application.backend.model.order.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

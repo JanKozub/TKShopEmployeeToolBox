@@ -1,7 +1,6 @@
-package org.jk.application.data.model;
+package org.jk.application.backend.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Expense {
     private int id;
