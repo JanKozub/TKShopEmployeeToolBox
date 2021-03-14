@@ -1,6 +1,7 @@
 package org.jk.application.views.orders;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -102,6 +103,24 @@ public class Layouts {
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrintPrice() + " PLN")).setHeader("Print Price");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrintTime() + " h/psc")).setHeader("Print Time");
+        productGrid.addColumn(new ComponentRenderer<>(c -> {
+            Button button = new Button("Edit", VaadinIcon.EDIT.create(), e -> {
+
+            });
+            button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            button.getStyle().set("background-color", "#1676f3");
+            return button;
+        }));
+        productGrid.addColumn(new ComponentRenderer<>(c -> {
+            Button button = new Button("Delete", VaadinIcon.MINUS_CIRCLE_O.create(),
+                    e -> {
+                        productService.deleteProduct(c.getId());
+                        productGrid.setItems(productService.getProducts());
+                    });
+            button.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+            button.getStyle().set("opacity", "85%");
+            return button;
+        }));
 
         productGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         productGrid.setItems(productService.getProducts());
