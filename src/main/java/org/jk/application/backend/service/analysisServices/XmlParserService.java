@@ -1,6 +1,7 @@
 package org.jk.application.backend.service.analysisServices;
 
 import org.jk.application.backend.model.order.*;
+import org.jk.application.backend.model.order.Product;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,9 +38,9 @@ public class XmlParserService {
                 Element deliveryElement = (Element) deliveryList.item(temp);
                 Element lineElement = (Element) lineItems.item(temp);
 
-                List<Item> items = new ArrayList<>();
+                List<Product> items = new ArrayList<>();
                 for (int i = 0; i < lineElement.getElementsByTagName("offerName").getLength(); i++) {
-                    Item item = new Item(
+                    Product item = new Product(
                             lineElement.getElementsByTagName("offerId").item(i).getTextContent(),
                             lineElement.getElementsByTagName("offerName").item(i).getTextContent(),
                             Integer.parseInt(lineElement.getElementsByTagName("quantity").item(i).getTextContent()),
@@ -49,28 +50,9 @@ public class XmlParserService {
                 }
                 if (!orderElement.getElementsByTagName("status").item(1).getTextContent().equals("CANCELLED")) {
                     Order order = new Order(
-                            temp + 1,
                             orderElement.getElementsByTagName("id").item(0).getTextContent(),
                             orderElement.getElementsByTagName("orderDate").item(0).getTextContent(),
-                            new Buyer(
-                                    orderElement.getElementsByTagName("name").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("email").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent()
-                            ),
-                            items,
-                            new Payment(
-                                    orderElement.getElementsByTagName("lastChanged").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("provider").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("amount").item(0).getTextContent()
-                            ),
-                            new Delivery(
-                                    orderElement.getElementsByTagName("methodName").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("phoneNumber").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("street").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("zipCode").item(0).getTextContent(),
-                                    orderElement.getElementsByTagName("city").item(0).getTextContent(),
-                                    deliveryElement.getElementsByTagName("amount").item(0).getTextContent()
-                            )
+                            items
                     );
                     orders.add(order);
                 }

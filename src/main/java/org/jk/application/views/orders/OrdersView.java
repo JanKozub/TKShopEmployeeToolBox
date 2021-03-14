@@ -15,12 +15,13 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.commons.io.FileUtils;
-import org.jk.application.backend.model.order.Item;
 import org.jk.application.backend.model.order.Order;
+import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.analysisServices.XmlParserService;
 import org.jk.application.views.main.MainView;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Route(value = "orders", layout = MainView.class)
@@ -39,12 +40,9 @@ public class OrdersView extends Div {
         setId("orders-view");
 
         grid = new Grid<>(Order.class);
-        grid.setColumns("number", "date");
+        grid.setColumns("id", "date");
 
-        grid.addColumn(new ComponentRenderer<>(OrdersView::renderBuyer)).setHeader("Buyer");
         grid.addColumn(new ComponentRenderer<>(OrdersView::renderItems)).setHeader("Items");
-        grid.addColumn(new ComponentRenderer<>(OrdersView::renderPayment)).setHeader("Payment");
-        grid.addColumn(new ComponentRenderer<>(OrdersView::renderDelivery)).setHeader("Delivery");
 
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -80,7 +78,7 @@ public class OrdersView extends Div {
     }
 
     private static VerticalLayout renderItems(Order order) {
-        List<Item> items = order.getItems();
+        List<Product> items = order.getProducts();
         VerticalLayout layout = new VerticalLayout();
         for (int i = 0; i < items.size(); i++) {
             Label name = new Label("Name: " + items.get(0).getName());
@@ -99,33 +97,6 @@ public class OrdersView extends Div {
         }
         return layout;
     }
-
-    private static VerticalLayout renderPayment(Order order) {
-        return new VerticalLayout(
-                new Label("Date: " + order.getPayment().getDate()),
-                new Label("Provider: " + order.getPayment().getProvider()),
-                new Label("amount: " + order.getPayment().getAmount() + " PLN")
-        );
-    }
-
-    private static VerticalLayout renderBuyer(Order order) {
-        return new VerticalLayout(
-                new Label("Name: " + order.getBuyer().getName()),
-                new Label("Email: " + order.getBuyer().getEmail()),
-                new Label("Phone: " + order.getBuyer().getPhone())
-        );
-    }
-
-    private static VerticalLayout renderDelivery(Order order) {
-        return new VerticalLayout(
-                new Label("Method: " + order.getDelivery().getMethodName()),
-                new Label("Cost: " + order.getDelivery().getCost() + " PLN"),
-                new Label("Street: " + order.getDelivery().getStreet()),
-                new Label("City: " + order.getDelivery().getCity() + " " + order.getDelivery().getZipcode()),
-                new Label("Phone: " + order.getDelivery().getPhone())
-        );
-    }
-
 
     private void refreshGrid() {
         try {

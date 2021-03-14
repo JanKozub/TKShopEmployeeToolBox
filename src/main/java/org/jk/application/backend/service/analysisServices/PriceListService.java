@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import org.jk.application.backend.model.Entry;
-import org.jk.application.backend.model.product.Product;
+import org.jk.application.backend.model.order.PrintInfo;
+import org.jk.application.backend.model.order.Product;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,13 +16,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PriceListService {
 
-    public static List<Product> getProducts() {
-        List<Product> products = new ArrayList<>();
+    public static List<PrintInfo> getProducts() {
+        List<PrintInfo> printInfos = new ArrayList<>();
         try {
             JsonFactory factory = new JsonFactory();
             JsonParser parser = factory.createParser(new File("src/main/resources/files/products.json"));
 
-            int num = 0;
+            String num = "";
             String name = "";
             double price = 0;
             double printPrice = 0;
@@ -31,7 +32,7 @@ public class PriceListService {
                     parser.nextToken();
 
                     if (parser.getCurrentName().equals("num"))
-                        num = parser.getValueAsInt();
+                        num = parser.getValueAsString();
 
                     if (parser.getCurrentName().equals("name"))
                         name = parser.getValueAsString();
@@ -43,23 +44,23 @@ public class PriceListService {
                         printPrice = parser.getValueAsDouble();
 
                     if (parser.getCurrentName().equals("printTime")) {
-                        products.add(new Product(num, name, price, printPrice, parser.getValueAsDouble()));
+                        printInfos.add(new PrintInfo(new Product(num, name, 0, price), printPrice, parser.getValueAsDouble()));
                     }
                 }
             }
         } catch (IOException e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
-        return products;
+        return printInfos;
     }
 
-    public static double sumPrintPrice(List<Product> products, List<Entry> entries) {
+    public static double sumPrintPrice(List<PrintInfo> products, List<Entry> entries) {
         double sum = 0;
         for (Entry e : entries) {
             AtomicReference<Double> price = new AtomicReference<>((double) 0);
 
             products.forEach(product -> {
-                if (product.getName().equals(e.getName())) {
+                if (product.getProduct().getName().equals(e.getName())) {
                     price.set(e.getNum() * product.getPrintPrice());
                 }
             });
@@ -68,14 +69,14 @@ public class PriceListService {
         return sum;
     }
 
-    public static double sumPrice(List<Product> products, List<Entry> entries) {
+    public static double sumPrice(List<PrintInfo> products, List<Entry> entries) {
         double sum = 0;
         for (Entry e : entries) {
             AtomicReference<Double> price = new AtomicReference<>((double) 0);
 
             products.forEach(product -> {
-                if (product.getName().equals(e.getName())) {
-                    price.set(e.getNum() * product.getPrice());
+                if (product.getProduct().getName().equals(e.getName())) {
+                    price.set(e.getNum() * product.getProduct().getPrice());
                 }
             });
             sum += price.get();

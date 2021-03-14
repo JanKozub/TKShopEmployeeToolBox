@@ -9,9 +9,9 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.jk.application.backend.model.Entry;
-import org.jk.application.backend.model.order.Item;
 import org.jk.application.backend.model.order.Order;
-import org.jk.application.backend.model.product.Product;
+import org.jk.application.backend.model.order.PrintInfo;
+import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.analysisServices.PriceListService;
 import org.jk.application.backend.service.analysisServices.XmlParserService;
 import org.jk.application.views.main.MainView;
@@ -36,14 +36,14 @@ public class SummaryView extends VerticalLayout {
         }
 
         List<Entry> entries = new ArrayList<>();
-        List<Product> products = PriceListService.getProducts();
+        List<PrintInfo> products = PriceListService.getProducts();
 
         for (Order order : orders) {
-            List<Item> items = order.getItems();
+            List<Product> items = order.getProducts();
 
             for (int i = 0; i < items.size(); i++) {
                 int finalI = i;
-                Item item = items.get(i);
+                Product item = items.get(i);
                 Entry entry = entries.stream().filter(p -> p.getName().equals(items.get(finalI).getName())).findFirst().orElse(null);
                 if (entry == null) {
                     entries.add(new Entry(item.getName(), 1, item.getPrice()));
@@ -76,7 +76,7 @@ public class SummaryView extends VerticalLayout {
         itemGrid.addColumn(new TextRenderer<>(entry -> {
             AtomicReference<String> val = new AtomicReference<>("unknown");
             products.forEach(product -> {
-                if (product.getName().equals(entry.getName())) {
+                if (product.getProduct().getName().equals(entry.getName())) {
                     val.set(String.valueOf(entry.getNum() * product.getPrintPrice()));
                 }
             });

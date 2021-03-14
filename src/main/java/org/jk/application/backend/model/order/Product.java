@@ -1,26 +1,24 @@
 package org.jk.application.backend.model.order;
 
-import java.util.Objects;
-
-public class Item {
-    private String offerId;
+public class Product {
+    private String id;
     private String name;
     private int quantity;
     private double price;
 
-    public Item(String id, String name, int quantity, double price) {
-        offerId = id;
+    public Product(String id, String name, int quantity, double price) {
+        this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public String getOfferId() {
-        return offerId;
+    public String getId() {
+        return id;
     }
 
-    public void setOfferId(String offerId) {
-        this.offerId = offerId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,18 +43,5 @@ public class Item {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return name.equals(item.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 }
