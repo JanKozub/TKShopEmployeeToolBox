@@ -12,11 +12,9 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
-import org.jk.application.backend.model.Expense;
 import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.model.order.PrintInfo;
 import org.jk.application.backend.model.order.Product;
-import org.jk.application.backend.service.analysisServices.ExpensesService;
 import org.jk.application.backend.service.analysisServices.PriceListService;
 
 import java.time.LocalDate;
@@ -99,52 +97,5 @@ public class Layouts {
             System.out.println("null");
             return null;
         }
-    }
-
-    static Dialog createExpenseDialog(Grid<Expense> expenseGrid) {
-        Label sumLabel = new Label(getSum());
-
-        Dialog addExpenseDialog = new Dialog();
-        DatePicker datePicker = new DatePicker("Date");
-        datePicker.setRequired(true);
-        datePicker.setValue(LocalDate.now());
-        datePicker.getElement().setAttribute("theme", "align-center");
-        TextField nameField = new TextField("Name");
-        nameField.setRequired(true);
-        NumberField numberField = new NumberField("Price");
-        numberField.setWidthFull();
-        numberField.setRequiredIndicatorVisible(true);
-        Button submitButton = new Button("Submit");
-        submitButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-        submitButton.setWidthFull();
-        submitButton.addClickListener(click -> {
-            ExpensesService.addExpense(new Expense(1, datePicker.getValue(), nameField.getValue(), numberField.getValue()));
-            addExpenseDialog.close();
-            datePicker.setValue(LocalDate.now());
-            nameField.clear();
-            numberField.clear();
-
-            sumLabel.setText(getSum());
-
-            expenseGrid.setItems(ExpensesService.getExpenses());
-        });
-
-        addExpenseDialog.add(new VerticalLayout(nameField, datePicker, numberField, submitButton));
-        addExpenseDialog.addDialogCloseActionListener(e -> {
-            addExpenseDialog.close();
-            datePicker.clear();
-            nameField.clear();
-            numberField.clear();
-        });
-
-        return addExpenseDialog;
-    }
-
-    static String getSum() {
-        double sum = 0;
-
-        sum += ExpensesService.getExpenses().stream().mapToDouble(Expense::getPrice).sum();
-
-        return sum + " PLN";
     }
 }
