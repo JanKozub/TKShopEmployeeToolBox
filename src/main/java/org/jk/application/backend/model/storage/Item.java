@@ -1,4 +1,4 @@
-package org.jk.application.backend.model;
+package org.jk.application.backend.model.storage;
 
 
 public class Item {

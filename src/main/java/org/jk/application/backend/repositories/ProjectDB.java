@@ -1,6 +1,6 @@
 package org.jk.application.backend.repositories;
 
-import org.jk.application.backend.model.Project;
+import org.jk.application.backend.model.storage.Project;
 
 import java.util.Collection;
 

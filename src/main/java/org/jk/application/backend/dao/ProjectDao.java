@@ -1,7 +1,7 @@
 package org.jk.application.backend.dao;
 
 import org.apache.ibatis.annotations.*;
-import org.jk.application.backend.model.Project;
+import org.jk.application.backend.model.storage.Project;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;

@@ -24,9 +24,6 @@ import org.jk.application.views.orders.OrdersView;
 import org.jk.application.views.pricelist.PriceListView;
 import org.jk.application.views.summary.SummaryView;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
 @JsModule("./styles/shared-styles.js")
 @CssImport("./styles/views/main/main-view.css")
 public class MainView extends AppLayout {

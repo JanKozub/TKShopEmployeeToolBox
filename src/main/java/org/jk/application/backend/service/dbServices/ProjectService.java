@@ -1,7 +1,7 @@
 package org.jk.application.backend.service.dbServices;
 
 import org.jk.application.backend.dao.ProjectDao;
-import org.jk.application.backend.model.Project;
+import org.jk.application.backend.model.storage.Project;
 import org.jk.application.backend.repositories.ProjectDB;
 import org.springframework.stereotype.Service;
 
