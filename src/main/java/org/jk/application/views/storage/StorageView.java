@@ -47,6 +47,7 @@ public class StorageView extends VerticalLayout {
         inventory = new Button("Inventory", VaadinIcon.LIST.create(), e -> {
             currentProjectId = 0;
             refreshTopBar();
+            refreshGrid();
         });
         inventory.getStyle().set("margin-left", "10px");
 
@@ -79,11 +80,12 @@ public class StorageView extends VerticalLayout {
         grid.addColumn(Item::getDemand).setHeader("Demand");
         grid.addColumn(Item::getId).setHeader("ID");
         grid.addColumn(new ComponentRenderer<>(b -> new Button("Edit",e -> {
+
         }))).setHeader("Edit");
         grid.addColumn(new ComponentRenderer<>(b -> {
             Button button = new Button("Delete", e -> {
                 itemService.deleteItem(b.getId());
-                refreshGrid(currentProjectId);
+                refreshGrid();
             });
             button.addThemeVariants(ButtonVariant.LUMO_ERROR);
             return button;
@@ -130,7 +132,7 @@ public class StorageView extends VerticalLayout {
             itemQuantity.clear();
             itemDemand.clear();
             itemDialog.close();
-            refreshGrid(currentProjectId);
+            refreshGrid();
         });
         confirmBtn.setWidth("100%");
         confirmBtn.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -170,8 +172,8 @@ public class StorageView extends VerticalLayout {
         Collection<Project> projects = projectService.getProjects();
         for (Project p : projects) {
             Button button = new Button(p.getName(), VaadinIcon.HARDDRIVE_O.create(), e -> {
-                refreshGrid(p.getId());
                 currentProjectId = p.getId();
+                refreshGrid();
                 refreshTopBar();
             });
 
@@ -193,7 +195,7 @@ public class StorageView extends VerticalLayout {
         header.add(addProject);
     }
 
-    private void refreshGrid(int id) {
-        grid.setItems(itemService.getItemsWithProjectId(id));
+    private void refreshGrid() {
+        grid.setItems(itemService.getItemsWithProjectId(currentProjectId));
     }
 }

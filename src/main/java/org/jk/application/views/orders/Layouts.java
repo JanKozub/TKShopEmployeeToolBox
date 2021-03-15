@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Layouts {
@@ -104,62 +103,37 @@ public class Layouts {
     }
 
     static VerticalLayout productsLayout(ProductService productService, Grid<Product> productGrid) {
-        AtomicBoolean isOpened = new AtomicBoolean(false);
 
-        VerticalLayout printPrice = new VerticalLayout();
-        printPrice.setPadding(false);
         VerticalLayout printTime = new VerticalLayout();
         printTime.setPadding(false);
-
-        NumberField printPriceField = new NumberField();
         NumberField printTimeField = new NumberField();
+        printTimeField.setWidth("70px");
+        printTimeField.setVisible(false);
+        Label printTimeLabel = new Label();
+        printTime.add(printTimeLabel, printTimeField);
 
         productGrid.addColumn(new TextRenderer<>(p -> String.valueOf(p.getId()))).setHeader("ID");
         productGrid.addColumn(new TextRenderer<>(Product::getName)).setHeader("Name");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
-        productGrid.addColumn(new ComponentRenderer<>(e -> printPrice)).setHeader("Print Price");
-        productGrid.addColumn(new ComponentRenderer<>(e -> printTime)).setHeader("Print Time");
-        productGrid.addColumn(new ComponentRenderer<>(c -> {
-            printPrice.add(new Label(c.getPrintPrice() + " PLN"));
-            printTime.add(new Label(c.getPrintTime() + " h"));
-            Button button = new Button("Edit", VaadinIcon.EDIT.create(), e -> {
-
-                if (!isOpened.get()) {
-                    printPrice.removeAll();
-                    printPriceField.setWidth("70px");
-                    printPrice.add(printPriceField);
-
-                    printTime.removeAll();
-                    printTimeField.setWidth("70px");
-                    printTime.add(printTimeField);
-                } else {
-                    productService.updateProduct(new Product(c.getId(), c.getName(), c.getQuantity(),
-                            c.getPrice(), printPriceField.getValue(), printTimeField.getValue()));
-                    productGrid.setItems(productService.getProducts());
-                    printPrice.removeAll();
-                    printTime.removeAll();
-                }
-                isOpened.set(!isOpened.get());
-            });
-            button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            button.getStyle().set("background-color", "#1676f3");
-            return button;
-        }));
-        productGrid.addColumn(new ComponentRenderer<>(c -> {
-            Button button = new Button("Delete", VaadinIcon.MINUS_CIRCLE_O.create(),
-                    e -> {
-                        productService.deleteProduct(c.getId());
-                        productGrid.setItems(productService.getProducts());
-                    });
-            button.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-            button.getStyle().set("opacity", "85%");
-            return button;
-        }));
+        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, productGrid, true))).setHeader("Print Price");
+        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, productGrid, false))).setHeader("Print Time");
+        productGrid.addColumn(new ComponentRenderer<>(p -> deleteButton(p, productService, productGrid)));
 
         productGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         productGrid.setItems(productService.getProducts());
         productGrid.setSizeFull();
 
         return new VerticalLayout(productGrid);
+    }
+
+    private static Button deleteButton(Product p, ProductService productService, Grid<Product> productGrid) {
+        Button button = new Button("Delete", VaadinIcon.MINUS_CIRCLE_O.create(),
+                e -> {
+                    productService.deleteProduct(p.getId());
+                    productGrid.setItems(productService.getProducts());
+                });
+        button.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        button.getStyle().set("opacity", "85%");
+        return button;
     }
 }
