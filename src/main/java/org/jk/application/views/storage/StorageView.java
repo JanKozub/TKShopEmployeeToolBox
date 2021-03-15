@@ -18,7 +18,6 @@ import org.jk.application.backend.model.storage.Item;
 import org.jk.application.backend.model.storage.Project;
 import org.jk.application.backend.service.IdGenerator;
 import org.jk.application.backend.service.dbServices.ItemService;
-import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.backend.service.dbServices.ProjectService;
 import org.jk.application.views.main.MainView;
 
@@ -181,8 +180,10 @@ public class StorageView extends VerticalLayout {
                 inventory.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
             } else {
                 if (currentProjectId == 0) {
+                    inventory.removeThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
                     inventory.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 } else
+                    inventory.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
                     inventory.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
                 button.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
             }
