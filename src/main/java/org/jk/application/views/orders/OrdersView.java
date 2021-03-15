@@ -20,6 +20,8 @@ import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.XmlParserService;
 import org.jk.application.backend.service.dbServices.ProductService;
 import org.jk.application.views.main.MainView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import java.util.List;
 @Route(value = "orders", layout = MainView.class)
 @PageTitle("Orders")
 public class OrdersView extends VerticalLayout {
+
+    private static final Logger log = LoggerFactory.getLogger(OrdersView.class);
 
     private final ProductService productService;
 
@@ -106,7 +110,7 @@ public class OrdersView extends VerticalLayout {
             Notification notification = new Notification("Error occured while uploading", 3000, Notification.Position.TOP_END);
             notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             notification.setOpened(true);
-            System.out.println(exception.toString());
+            log.error(exception.getMessage());
         }
     }
 }

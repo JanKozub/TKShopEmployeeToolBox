@@ -13,6 +13,8 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import org.jk.application.backend.model.order.Order;
 import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.dbServices.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Layouts {
+
+    private static final Logger log = LoggerFactory.getLogger(Layouts.class);
 
     static Dialog createDialog(ProductService productService, boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> printsGrid) {
         Dialog dialog = new Dialog();
@@ -94,7 +98,7 @@ public class Layouts {
         try {
             return (Product) t;
         } catch (NullPointerException ex) {
-            System.out.println("null");
+            log.error(ex.getMessage());
             return null;
         }
     }
