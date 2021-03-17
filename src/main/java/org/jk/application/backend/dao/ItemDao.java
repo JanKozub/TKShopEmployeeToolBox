@@ -31,4 +31,14 @@ public interface ItemDao {
 
     @Delete("DELETE FROM Items WHERE id = #{id}")
     void deleteItem(int id);
+
+    @Update("UPDATE Items SET name = #{name} WHERE id = #{id}")
+    void updateName(int id, String name);
+
+    @Update("UPDATE Items SET quantity = #{quantity} WHERE id = #{id}")
+    void updateQuantity(int id, int quantity);
+
+    @Update("UPDATE Items SET demand = #{demand} WHERE id = #{id}")
+    void updateDemand(int id, int demand);
+
 }

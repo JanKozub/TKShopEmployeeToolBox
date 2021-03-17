@@ -51,7 +51,7 @@ public class StorageView extends VerticalLayout {
         });
         inventory.getStyle().set("margin-left", "10px");
 
-        Dialog addProjectDialog = createAddProjectDialog();
+        Dialog addProjectDialog = addProjectDialog();
 
         addProject = new Button("Add Project", VaadinIcon.PLUS.create(), e -> addProjectDialog.open());
         addProject.getStyle().set("margin-left", "10px");
@@ -60,12 +60,12 @@ public class StorageView extends VerticalLayout {
         header.setWidth("100%");
         refreshTopBar();
 
-        Dialog itemDialog = createAddItemDialog();
+        Dialog itemDialog = addItemDialog();
         Button addItem = new Button("Add Item", VaadinIcon.PLUS_CIRCLE_O.create(), i -> itemDialog.open());
         addItem.setWidth("50%");
         addItem.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
-        Dialog deleteProjectDialog = createDeleteProjectDialog();
+        Dialog deleteProjectDialog = deleteProjectDialog();
         Button deleteProject = new Button("Delete Project", VaadinIcon.MINUS_CIRCLE_O.create(), dp -> deleteProjectDialog.open());
         deleteProject.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteProject.setWidth("50%");
@@ -75,28 +75,51 @@ public class StorageView extends VerticalLayout {
 
         grid = new Grid<>();
 
-        grid.addColumn(Item::getName).setHeader("Name");
-        grid.addColumn(Item::getQuantity).setHeader("Quantity");
-        grid.addColumn(Item::getDemand).setHeader("Demand");
+        grid.addColumn(new ComponentRenderer<>(this::nameEditField)).setHeader("Name");
+        grid.addColumn(new ComponentRenderer<>(i -> editValueField(i, false))).setHeader("Quantity");
+        grid.addColumn(new ComponentRenderer<>(i -> editValueField(i, true))).setHeader("Demand");
         grid.addColumn(Item::getId).setHeader("ID");
-        grid.addColumn(new ComponentRenderer<>(b -> new Button("Edit",e -> {
-
-        }))).setHeader("Edit");
-        grid.addColumn(new ComponentRenderer<>(b -> {
-            Button button = new Button("Delete", e -> {
-                itemService.deleteItem(b.getId());
-                refreshGrid();
-            });
-            button.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            return button;
-        })).setHeader("Delete");
-
+        grid.addColumn(new ComponentRenderer<>(this::deleteButton)).setHeader("Delete");
         add(header, createCenterLine(), buttons, grid);
 
         setSizeFull();
+        refreshGrid();
     }
 
-    private Dialog createAddProjectDialog() {
+    private TextField nameEditField(Item i) {
+        TextField textField = new TextField();
+        textField.setValue(i.getName());
+        textField.addValueChangeListener(v -> {
+            itemService.updateName(i.getId(), v.getValue());
+            refreshGrid();
+        });
+        return textField;
+    }
+
+    private NumberField editValueField(Item i, boolean type) {
+        NumberField numberField = new NumberField();
+        if (type) numberField.setValue((double) i.getDemand());
+        else numberField.setValue((double) i.getQuantity());
+        numberField.setStep(1);
+        numberField.setHasControls(true);
+        numberField.addValueChangeListener(e -> {
+            if (type) itemService.updateDemand(i.getId(), numberField.getValue().intValue());
+            else itemService.updateQuantity(i.getId(), numberField.getValue().intValue());
+            refreshGrid();
+        });
+        return numberField;
+    }
+
+    private Button deleteButton(Item i) {
+        Button button = new Button("Delete", e -> {
+            itemService.deleteItem(i.getId());
+            refreshGrid();
+        });
+        button.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        return button;
+    }
+
+    private Dialog addProjectDialog() {
         Dialog dialog = new Dialog();
         TextField projectName = new TextField("Project Name");
         Button addButton = new Button("Add Project");
@@ -115,8 +138,8 @@ public class StorageView extends VerticalLayout {
         return dialog;
     }
 
-    private Dialog createAddItemDialog() {
-        Dialog itemDialog = new Dialog(new Label("New Item"));
+    private Dialog addItemDialog() {
+        Dialog itemDialog = new Dialog();
         TextField itemName = new TextField("Item Name");
         itemName.setWidth("100%");
         NumberField itemQuantity = new NumberField("Current Quantity");
@@ -136,13 +159,13 @@ public class StorageView extends VerticalLayout {
         });
         confirmBtn.setWidth("100%");
         confirmBtn.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-        VerticalLayout idvl = new VerticalLayout(itemName, itemQuantity, itemDemand, confirmBtn);
+        VerticalLayout idvl = new VerticalLayout(new Label("New Item"), itemName, itemQuantity, itemDemand, confirmBtn);
         idvl.setAlignItems(Alignment.CENTER);
         itemDialog.add(idvl);
         return itemDialog;
     }
 
-    private Dialog createDeleteProjectDialog() {
+    private Dialog deleteProjectDialog() {
         Dialog dialog = new Dialog();
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(new Label("Are you sure?"));
@@ -186,7 +209,7 @@ public class StorageView extends VerticalLayout {
                     inventory.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 } else
                     inventory.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
-                    inventory.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
+                inventory.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
                 button.addThemeVariants(ButtonVariant.MATERIAL_OUTLINED);
             }
 

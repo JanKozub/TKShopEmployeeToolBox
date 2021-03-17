@@ -17,4 +17,10 @@ public interface ItemDB {
     Collection<Integer> getIds();
 
     void deleteItem(int id);
+
+    void updateName(int id, String name);
+
+    void updateQuantity(int id, int demand);
+
+    void updateDemand(int id, int demand);
 }

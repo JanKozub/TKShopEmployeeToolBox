@@ -52,4 +52,19 @@ public class ItemService implements ItemDB {
     public void deleteItem(int id) {
         itemDao.deleteItem(id);
     }
+
+    @Override
+    public void updateName(int id, String name) {
+        itemDao.updateName(id, name);
+    }
+
+    @Override
+    public void updateQuantity(int id, int demand) {
+        itemDao.updateQuantity(id, demand);
+    }
+
+    @Override
+    public void updateDemand(int id, int demand) {
+        itemDao.updateDemand(id, demand);
+    }
 }
