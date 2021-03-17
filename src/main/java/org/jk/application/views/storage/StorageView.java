@@ -34,6 +34,8 @@ public class StorageView extends VerticalLayout {
     private final Button inventory;
     private final Button addProject;
     private final Grid<Item> grid;
+    private final Button editProject;
+    private final Button deleteProject;
 
     private int currentProjectId = 0;
 
@@ -58,19 +60,19 @@ public class StorageView extends VerticalLayout {
         addProject.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
         header.setWidth("100%");
-        refreshTopBar();
 
-        Dialog itemDialog = addItemDialog();
-        Button addItem = new Button("Add Item", VaadinIcon.PLUS_CIRCLE_O.create(), i -> itemDialog.open());
-        addItem.setWidth("50%");
+        Button addItem = new Button("Add Item", VaadinIcon.PLUS_CIRCLE_O.create(), i -> addItemDialog().open());
+        addItem.setWidth("33%");
         addItem.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
-        Dialog deleteProjectDialog = deleteProjectDialog();
-        Button deleteProject = new Button("Delete Project", VaadinIcon.MINUS_CIRCLE_O.create(), dp -> deleteProjectDialog.open());
-        deleteProject.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        deleteProject.setWidth("50%");
+        editProject = new Button("Edit Project", VaadinIcon.EDIT.create(), dp -> editProjectDialog().open());
+        editProject.setWidth("33%");
 
-        HorizontalLayout buttons = new HorizontalLayout(addItem, deleteProject);
+        deleteProject = new Button("Delete Project", VaadinIcon.MINUS_CIRCLE_O.create(), dp -> deleteProjectDialog().open());
+        deleteProject.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        deleteProject.setWidth("33%");
+
+        HorizontalLayout buttons = new HorizontalLayout(addItem, editProject, deleteProject);
         buttons.setWidth("100%");
 
         grid = new Grid<>();
@@ -84,6 +86,7 @@ public class StorageView extends VerticalLayout {
 
         setSizeFull();
         refreshGrid();
+        refreshTopBar();
     }
 
     private TextField nameEditField(Item i) {
@@ -135,6 +138,29 @@ public class StorageView extends VerticalLayout {
         VerticalLayout verticalLayout = new VerticalLayout(projectName, addButton);
         verticalLayout.setAlignItems(Alignment.CENTER);
         dialog.add(verticalLayout);
+        return dialog;
+    }
+
+    private Dialog editProjectDialog() {
+        Dialog dialog = new Dialog();
+        VerticalLayout dialogLayout = new VerticalLayout();
+        TextField newName = new TextField();
+        newName.setRequired(true);
+        Button button = new Button("Submit", b -> {
+            if (!newName.getValue().isEmpty()) {
+                projectService.updateProject(new Project(currentProjectId, newName.getValue()));
+                refreshTopBar();
+                dialog.close();
+            } else {
+                newName.setErrorMessage("Fill up name");
+            }
+        });
+        button.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        button.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        button.setWidth("100%");
+        dialogLayout.add(new Label("Change name"), newName, button);
+        dialogLayout.setAlignItems(Alignment.CENTER);
+        dialog.add(dialogLayout);
         return dialog;
     }
 
@@ -216,6 +242,9 @@ public class StorageView extends VerticalLayout {
             header.add(button);
         }
         header.add(addProject);
+
+        editProject.setEnabled(currentProjectId != 0);
+        deleteProject.setEnabled(currentProjectId != 0);
     }
 
     private void refreshGrid() {

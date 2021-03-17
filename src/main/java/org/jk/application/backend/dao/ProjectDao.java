@@ -1,6 +1,7 @@
 package org.jk.application.backend.dao;
 
 import org.apache.ibatis.annotations.*;
+import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.model.storage.Project;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +28,8 @@ public interface ProjectDao {
             @Arg(column = "id", javaType = int.class)
     })
     Collection<Integer> getIds();
+
+    @Update("UPDATE Projects SET name = #{name} WHERE id = #{id}")
+    void updateProject(Project project);
 
 }

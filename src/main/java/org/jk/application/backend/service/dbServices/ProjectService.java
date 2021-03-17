@@ -47,8 +47,7 @@ public class ProjectService implements ProjectDB {
 
     @Override
     public void updateProject(Project project) {
-        projectDao.deleteProject(project.getId());
-        projectDao.addProject(project);
+        projectDao.updateProject(project);
     }
 
     @Override
