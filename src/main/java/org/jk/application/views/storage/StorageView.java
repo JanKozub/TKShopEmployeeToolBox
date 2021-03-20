@@ -65,8 +65,8 @@ public class StorageView extends VerticalLayout {
         buttons.setWidth("100%");
 
         grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.nameEditField(currentProjectId, i))).setHeader("Name");
-        grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.editValueField(currentProjectId, i, false))).setHeader("Quantity");
-        grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.editValueField(currentProjectId, i, true))).setHeader("Demand");
+        grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.editValueField(i, false))).setHeader("Quantity");
+        grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.editValueField(i, true))).setHeader("Demand");
         grid.addColumn(Item::getId).setHeader("ID");
         grid.addColumn(new ComponentRenderer<>(i -> storageLayouts.deleteButton(currentProjectId, i))).setHeader("Delete");
         add(header, storageLayouts.createCenterLine(), buttons, grid);

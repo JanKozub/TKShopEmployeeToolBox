@@ -179,8 +179,7 @@ class StorageLayouts {
                         refreshTopBar(currentProjectId);
                         projectName.clear();
                         dialog.close();
-                    }
-                    else {
+                    } else {
                         projectName.setErrorMessage("Fill Up Name Field!");
                         projectName.setInvalid(true);
                     }
@@ -201,18 +200,40 @@ class StorageLayouts {
         return button;
     }
 
-    NumberField editValueField(AtomicInteger currentProjectId, Item i, boolean type) {
+    NumberField editValueField(Item i, boolean type) {
         NumberField numberField = new NumberField();
         if (type) numberField.setValue((double) i.getDemand());
         else numberField.setValue((double) i.getQuantity());
         numberField.setStep(1);
+        numberField.setMin(0);
         numberField.setHasControls(true);
+        if (!type) {
+            refreshFieldColor(numberField, i.getQuantity(), i.getDemand());
+        }
         numberField.addValueChangeListener(e -> {
-            if (type) itemService.updateDemand(i.getId(), numberField.getValue().intValue());
-            else itemService.updateQuantity(i.getId(), numberField.getValue().intValue());
-            refreshGrid(currentProjectId);
+            if (type) {
+                itemService.updateDemand(i.getId(), numberField.getValue().intValue());
+                numberField.setValue((double) itemService.getItemById(i.getId()).getDemand());
+            } else {
+                itemService.updateQuantity(i.getId(), numberField.getValue().intValue());
+                refreshFieldColor(numberField, numberField.getValue().intValue(),
+                        itemService.getItemById(i.getId()).getDemand());
+                numberField.setValue((double) itemService.getItemById(i.getId()).getQuantity());
+            }
         });
         return numberField;
+    }
+
+    private void refreshFieldColor(NumberField numberField, int quantity, int demand) {
+        if (quantity < demand) {
+            numberField.getStyle().set("color", "red");
+        } else {
+            if (quantity == demand) {
+                numberField.getStyle().set("color", "yellow");
+            } else {
+                numberField.getStyle().set("color", "green");
+            }
+        }
     }
 
     TextField nameEditField(AtomicInteger currentProjectId, Item i) {
