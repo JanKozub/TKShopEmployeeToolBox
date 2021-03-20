@@ -125,14 +125,21 @@ public class StorageView extends VerticalLayout {
     private Dialog addProjectDialog() {
         Dialog dialog = new Dialog();
         TextField projectName = new TextField("Project Name");
+        projectName.setRequired(true);
         Button addButton = new Button("Add Project");
         addButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         addButton.addClickListener(
                 clk -> {
-                    projectService.addProject(new Project(IdGenerator.generateProjectId(projectService), projectName.getValue()));
-                    refreshTopBar();
-                    projectName.clear();
-                    dialog.close();
+                    if (!projectName.isEmpty()) {
+                        projectService.addProject(new Project(IdGenerator.generateProjectId(projectService), projectName.getValue()));
+                        refreshTopBar();
+                        projectName.clear();
+                        dialog.close();
+                    }
+                    else {
+                        projectName.setErrorMessage("Fill Up Name Field!");
+                        projectName.setInvalid(true);
+                    }
                 }
         );
         VerticalLayout verticalLayout = new VerticalLayout(projectName, addButton);
@@ -152,7 +159,8 @@ public class StorageView extends VerticalLayout {
                 refreshTopBar();
                 dialog.close();
             } else {
-                newName.setErrorMessage("Fill up name");
+                newName.setErrorMessage("Fill Up Name Field!");
+                newName.setInvalid(true);
             }
         });
         button.addThemeVariants(ButtonVariant.LUMO_SUCCESS);

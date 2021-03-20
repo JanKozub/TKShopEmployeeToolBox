@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Layouts {
+public class OrdersLayouts {
 
-    private static final Logger log = LoggerFactory.getLogger(Layouts.class);
+    private static final Logger log = LoggerFactory.getLogger(OrdersLayouts.class);
 
     static Dialog createDialog(ProductService productService, boolean dialogType, Grid<Order> ordersGrid, Grid<Object[]> printsGrid) {
         Dialog dialog = new Dialog();
@@ -42,7 +42,7 @@ public class Layouts {
 
     static VerticalLayout ordersLayout(Grid<Order> ordersGrid) {
         ordersGrid.setColumns("id", "date");
-        ordersGrid.addColumn(new ComponentRenderer<>(Layouts::renderItems)).setHeader("Items");
+        ordersGrid.addColumn(new ComponentRenderer<>(OrdersLayouts::renderItems)).setHeader("Items");
         ordersGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         ordersGrid.setHeight("90%");
         VerticalLayout layout = new VerticalLayout(ordersGrid);

@@ -56,11 +56,11 @@ public class OrdersView extends VerticalLayout {
         upload.addSucceededListener(e -> refreshGrid(buffer.getInputStream()));
         upload.setDropAllowed(true);
 
-        Dialog ordersDialog = Layouts.createDialog(productService, true, ordersGrid, printsGrid);
+        Dialog ordersDialog = OrdersLayouts.createDialog(productService, true, ordersGrid, printsGrid);
         Button ordersButton = new Button("Show Orders", VaadinIcon.LIST.create(), o -> ordersDialog.open());
         ordersButton.setWidth("100%");
 
-        Dialog printsDialog = Layouts.createDialog(productService, false, ordersGrid, printsGrid);
+        Dialog printsDialog = OrdersLayouts.createDialog(productService, false, ordersGrid, printsGrid);
         Button printsButton = new Button("Show Prints", VaadinIcon.PRINT.create(), o -> printsDialog.open());
         printsButton.setWidth("100%");
 
@@ -69,10 +69,10 @@ public class OrdersView extends VerticalLayout {
         topLayout.setHeight("50%");
         topLayout.getStyle().set("border", "1px solid rgba(235, 243, 255, 0.2)");
 
-        VerticalLayout left = new VerticalLayout(topLayout, Layouts.renderStatsGrid(statsGrid));
+        VerticalLayout left = new VerticalLayout(topLayout, OrdersLayouts.renderStatsGrid(statsGrid));
         left.setWidth("20%");
 
-        VerticalLayout right = Layouts.productsLayout(productService, productGrid);
+        VerticalLayout right = OrdersLayouts.productsLayout(productService, productGrid);
         right.setWidth("80%");
 
         HorizontalLayout mainLayout = new HorizontalLayout(left, right);
