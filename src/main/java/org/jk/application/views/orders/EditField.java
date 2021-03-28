@@ -10,8 +10,8 @@ import com.vaadin.flow.component.textfield.NumberField;
 import org.jk.application.backend.model.order.Product;
 import org.jk.application.backend.service.dbServices.ProductService;
 
-public class EditField extends HorizontalLayout {
-    public EditField(Product p, ProductService productService, Grid<Product> productGrid, boolean type) {
+class EditField extends HorizontalLayout {
+    EditField(Product p, ProductService productService, boolean type) {
         String label;
         if (type) {
             label = p.getPrintPrice() + " PLN";
@@ -27,26 +27,31 @@ public class EditField extends HorizontalLayout {
         NumberField nf = new NumberField();
         nf.setWidth("140px");
         nf.addKeyDownListener(Key.ENTER, c -> {
-            removeAll();
-            if (type) {
-                productService.updateProduct(new Product(p.getId(), p.getName(), p.getQuantity(),
-                        p.getPrice(), nf.getValue(), p.getPrintPrice()));
-            } else {
-                productService.updateProduct(new Product(p.getId(), p.getName(), p.getQuantity(),
-                        p.getPrice(), p.getPrintPrice(), nf.getValue()));
+            nf.setVisible(false);
+            if (!nf.isEmpty()) {
+                if (type) {
+                    productService.updateProduct(new Product(p.getId(), p.getName(), p.getQuantity(),
+                            p.getPrice(), nf.getValue(), p.getPrintTime()));
+                    button.setText(productService.getProductByName(p.getName()).getPrintPrice() + " PLN");
+                } else {
+                    productService.updateProduct(new Product(p.getId(), p.getName(), p.getQuantity(),
+                            p.getPrice(), p.getPrintPrice(), nf.getValue()));
+                    button.setText(productService.getProductByName(p.getName()).getPrintTime() + " h");
+                }
             }
-            productGrid.setItems(productService.getProducts());
-            add(button);
+            button.setVisible(true);
         });
 
         button.addClickListener(b -> {
-            removeAll();
-            add(nf);
+            button.setVisible(false);
+            nf.setVisible(true);
             nf.focus();
         });
         button.getStyle().set("background-color", "#1676f3");
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(button);
+        button.setVisible(true);
+        nf.setVisible(false);
+        add(button, nf);
     }
 
 }

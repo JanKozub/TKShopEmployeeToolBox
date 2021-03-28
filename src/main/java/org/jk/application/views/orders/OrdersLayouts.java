@@ -115,8 +115,8 @@ public class OrdersLayouts {
         productGrid.addColumn(new TextRenderer<>(p -> String.valueOf(p.getId()))).setHeader("ID");
         productGrid.addColumn(new TextRenderer<>(Product::getName)).setHeader("Name");
         productGrid.addColumn(new TextRenderer<>(p -> p.getPrice() + " PLN")).setHeader("Price");
-        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, productGrid, true))).setHeader("Print Price");
-        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, productGrid, false))).setHeader("Print Time");
+        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, true))).setHeader("Print Price");
+        productGrid.addColumn(new ComponentRenderer<>(p -> new EditField(p, productService, false))).setHeader("Print Time");
         productGrid.addColumn(new ComponentRenderer<>(p -> deleteButton(p, productService, productGrid)));
 
         productGrid.getColumns().forEach(column -> column.setAutoWidth(true));
