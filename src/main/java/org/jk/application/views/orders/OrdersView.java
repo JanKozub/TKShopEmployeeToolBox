@@ -102,8 +102,7 @@ public class OrdersView extends VerticalLayout {
 
             List<Info> infos = new ArrayList<>();
             infos.add(new Info("Order price", Double.toString(xmlParserService.getOrdersPrice())));
-            infos.add(new Info("Prints price", "null"));
-            infos.add(new Info("Expenses price", "null"));
+            infos.add(new Info("Prints price", getPrintPrices() + " PLN"));
             statsGrid.setItems(infos);
 
         } catch (Exception exception) {
@@ -112,5 +111,16 @@ public class OrdersView extends VerticalLayout {
             notification.setOpened(true);
             log.error(exception.getMessage());
         }
+    }
+
+    private double getPrintPrices() {
+        double sum = 0;
+
+        for (Order order : orders) {
+            for (Product product : order.getProducts()) {
+                sum = sum +productService.getProductByName(product.getName()).getPrintPrice();
+            }
+        }
+        return sum;
     }
 }

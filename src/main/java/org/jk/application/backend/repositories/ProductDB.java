@@ -13,6 +13,8 @@ public interface ProductDB {
 
     List<Product> getProducts();
 
+    Product getProductByName(String name);
+
     Collection<Integer> getIds();
 
     Collection<String> getNames();

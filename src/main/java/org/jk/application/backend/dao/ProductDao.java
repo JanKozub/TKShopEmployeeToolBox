@@ -25,6 +25,17 @@ public interface ProductDao {
     })
     Collection<Product> getProducts();
 
+    @Select("SELECT * FROM Products WHERE name = #{name}")
+    @ConstructorArgs({
+            @Arg(column = "id", javaType = int.class),
+            @Arg(column = "name", javaType = String.class),
+            @Arg(column = "quantity", javaType = int.class),
+            @Arg(column = "price", javaType = double.class),
+            @Arg(column = "printPrice", javaType = double.class),
+            @Arg(column = "printTime", javaType = double.class)
+    })
+    Product getProductByName(String name);
+
     @Delete("DELETE FROM Products WHERE id = #{id}")
     void deleteProduct(int id);
 

@@ -33,6 +33,11 @@ public class ProductService implements ProductDB {
     }
 
     @Override
+    public Product getProductByName(String name) {
+        return productDao.getProductByName(name);
+    }
+
+    @Override
     public Collection<Integer> getIds() {
         return productDao.getIds();
     }
